@@ -2,6 +2,8 @@ import SupplyContractBuild from 'contracts/SupplyChain.json';
 import Web3 from 'web3';
 import ClientContract from 'contracts/Client.json';
 import ManufacturerContract from 'contracts/Manufacturer.json'
+import PhContract from 'contracts/Pharmacy.json'
+
 const web3 = new Web3('http://localhost:7545'); 
 
 let selectedAccount;
@@ -11,6 +13,9 @@ let Clientrole;
 let isInitialized = false;
 let manufacturerContract;
 let ManuRole;
+let phContract;
+let PhRole; 
+
 export const init = async () => {
 	let provider = window.ethereum;
 
@@ -55,13 +60,19 @@ export const isManu = async () => {
 	const isManufacturer = await ManuRole.methods.isManufacturer(selectedAccount).call();
 	console.log('isManu:', isManufacturer);
 }
+export const isPharm = async () => {
+	if (!isInitialized) {
+		await init();
+	}
+	const isPharm = await PhRole.methods.isPharmacie(selectedAccount).call();
+	console.log('isPharm:', isPharm);
+}
 
 export const deployClientContract = async () => {
 	if (!isInitialized) {
 		await init();
 	}
 	const web3 = new Web3(window.ethereum);
-	const networkId = await web3.eth.net.getId();
 	clientContract = new web3.eth.Contract(
 		ClientContract.abi,
 		{ from: selectedAccount },
@@ -90,7 +101,6 @@ export const deployManufacturerContract = async () => {
 		await init();
 	}
 	const web3 = new Web3(window.ethereum);
-	const networkId = await web3.eth.net.getId();
 	manufacturerContract = new web3.eth.Contract(
 		ManufacturerContract.abi,
 		{ from: selectedAccount },
@@ -114,6 +124,34 @@ export const deployManufacturerContract = async () => {
 	
 	await isManu();
 };
+export const deployPh = async () => {
+	if (!isInitialized) {
+		await init();
+	}
+	const web3 = new Web3(window.ethereum);
+	phContract = new web3.eth.Contract(
+		PhContract.abi,
+		{ from: selectedAccount },
+	);
+	const deployedContract = await phContract
+		.deploy({
+			data: PhContract.bytecode,
+			arguments: [],
+		})
+		.send({
+			from: selectedAccount,
+			gas: '5000000',
+			gasPrice: web3.utils.toWei('20', 'gwei'),
+		});
+	console.log(`Contract Manu deployed at ${deployedContract.options.address}`);
+	
+	PhRole = new web3.eth.Contract(
+		PhContract.abi,
+		deployedContract.options.address
+	);
+	
+	await isPharm();
+};
 
 
 // export const isClient = async () => {
@@ -129,15 +167,25 @@ export const deployManufacturerContract = async () => {
 
 // 	return rolesInstance.methods.isClient(selectedAccount).call();
 // };
- export const mintToken = async () => {
- 	if (!isInitialized) {
- 		await init();
- 	}
+export const mintToken = async (name, description, price) => {
+    if (!isInitialized) {
+        await init();
+    }
 
-	return supplyContract.methods
-		.drugCreate("test11111","test222222",12)
- 		.call()
- };
+    const createTx = await supplyContract.methods
+        .drugCreate(name,description,price)
+        .send({
+            from: selectedAccount,
+            gas: '5000000',
+            gasPrice: web3.utils.toWei('20', 'gwei'),
+        });
+	const num = await supplyContract.methods
+	.getDrugsNumber()
+	 .call();
+	const drug = await supplyContract.methods.drugs(num-1).call();
+    return drug;
+};
+
 //  export const giveClientRole = async () => {
 // 	if (!isInitialized) {
 // 		 await init();
@@ -161,5 +209,14 @@ export const accept = async () => {
 
    return supplyContract.methods
 	   .AcceptOrder(0)
+		.call();
+};
+export const DrugNum = async () => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   return supplyContract.methods
+	   .getDrugsNumber()
 		.call();
 };

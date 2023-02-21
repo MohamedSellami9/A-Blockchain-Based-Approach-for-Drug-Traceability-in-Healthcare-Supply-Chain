@@ -29,13 +29,9 @@ contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
         address distributor;
         OrderStatus Status;
     }
-    constructor(){
+    constructor(){       
 
-        drugCreate("test","test",12);
-        
-        
-
-  }
+    }
   function getDrugsNumber() public view returns (uint) {
     return drugsNumber;
 }   
@@ -61,7 +57,8 @@ contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
         require(bytes(_description1).length > 0, "String must not be empty");
         _;
     }
-    function drugCreate (string memory name1,string memory description1,int price) public onlyManufacturer nameDrug(name1,description1)  returns (Drug memory) {
+function drugCreate (string memory name1, string memory description1, int price) public payable onlyManufacturer nameDrug(name1, description1) returns (Drug memory){
+    require(msg.value >= 0.01 ether, "Payment amount is insufficient.");
     Drug memory drug = Drug({
         id : drugsNumber ,
         name : name1,
@@ -71,6 +68,7 @@ contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
         price : price ,
         ownerID : msg.sender
     });
+
     drugs[drugsNumber]= drug;
     drugsNumber++;
     return drug;
