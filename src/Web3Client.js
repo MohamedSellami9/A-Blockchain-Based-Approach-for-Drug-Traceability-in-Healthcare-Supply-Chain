@@ -46,11 +46,11 @@ export const init = async () => {
 	isInitialized = true;
 };
 
-export const isClient = async () => {
+export const isClient = async (Adress) => {
 	if (!isInitialized) {
 		await init();
 	}
-	const isClient = await Clientrole.methods.isClient(selectedAccount).call();
+	const isClient = await Clientrole.methods.isClient(Adress).call();
 	console.log('isClient:', isClient);
 }
 export const isManu = async () => {
@@ -94,7 +94,6 @@ export const deployClientContract = async () => {
 		deployedContract.options.address
 	);
 	
-	await isClient();
 };
 export const deployManufacturerContract = async () => {
 	if (!isInitialized) {
@@ -115,7 +114,7 @@ export const deployManufacturerContract = async () => {
 			gas: '5000000',
 			gasPrice: web3.utils.toWei('20', 'gwei'),
 		});
-	console.log(`Contract Manu deployed at ${deployedContract.options.address}`);
+	console.log(`Contract Manu deployed at ${selectedAccount}`);
 	
 	ManuRole = new web3.eth.Contract(
 		ManufacturerContract.abi,
@@ -143,7 +142,7 @@ export const deployPh = async () => {
 			gas: '5000000',
 			gasPrice: web3.utils.toWei('20', 'gwei'),
 		});
-	console.log(`Contract Manu deployed at ${deployedContract.options.address}`);
+	console.log(`Contract Manu deployed at ${selectedAccount}`);
 	
 	PhRole = new web3.eth.Contract(
 		PhContract.abi,
@@ -168,10 +167,7 @@ export const deployPh = async () => {
 // 	return rolesInstance.methods.isClient(selectedAccount).call();
 // };
 export const mintToken = async (name, description, price) => {
-    if (!isInitialized) {
-        await init();
-    }
-
+	await init();
     const createTx = await supplyContract.methods
         .drugCreate(name,description,price)
         .send({

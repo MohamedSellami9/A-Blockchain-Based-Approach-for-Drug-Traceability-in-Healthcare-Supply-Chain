@@ -2175,22 +2175,22 @@
     "absolutePath": "project:/contracts/RoleManager.sol",
     "exportedSymbols": {
       "Client": [
-        560
+        568
       ],
       "Distributor": [
-        629
+        637
       ],
       "Manufacturer": [
-        698
+        706
       ],
       "Pharmacy": [
-        767
+        775
       ],
       "RoleManager": [
         54
       ],
       "Roles": [
-        842
+        850
       ]
     },
     "id": 55,
@@ -2215,7 +2215,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 55,
-        "sourceUnit": 561,
+        "sourceUnit": 569,
         "src": "60:28:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -2227,7 +2227,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 55,
-        "sourceUnit": 630,
+        "sourceUnit": 638,
         "src": "90:33:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -2239,7 +2239,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 55,
-        "sourceUnit": 699,
+        "sourceUnit": 707,
         "src": "125:34:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -2251,7 +2251,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 55,
-        "sourceUnit": 768,
+        "sourceUnit": 776,
         "src": "161:30:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -2267,7 +2267,7 @@
                 "219:6:0"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 560,
+              "referencedDeclaration": 568,
               "src": "219:6:0"
             },
             "id": 7,
@@ -2282,7 +2282,7 @@
                 "226:11:0"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 629,
+              "referencedDeclaration": 637,
               "src": "226:11:0"
             },
             "id": 9,
@@ -2297,7 +2297,7 @@
                 "238:12:0"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 698,
+              "referencedDeclaration": 706,
               "src": "238:12:0"
             },
             "id": 11,
@@ -2312,7 +2312,7 @@
                 "251:8:0"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 767,
+              "referencedDeclaration": 775,
               "src": "251:8:0"
             },
             "id": 13,
@@ -2327,10 +2327,10 @@
         "id": 54,
         "linearizedBaseContracts": [
           54,
-          767,
-          698,
-          629,
-          560
+          775,
+          706,
+          637,
+          568
         ],
         "name": "RoleManager",
         "nameLocation": "204:11:0",
@@ -2404,7 +2404,7 @@
                         "name": "isClient",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 559,
+                        "referencedDeclaration": 567,
                         "src": "427:8:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_view$_t_address_$returns$_t_bool_$",
@@ -2499,7 +2499,7 @@
                         "name": "isDistributor",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 628,
+                        "referencedDeclaration": 636,
                         "src": "467:13:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_view$_t_address_$returns$_t_bool_$",
@@ -2594,7 +2594,7 @@
                         "name": "isManufacturer",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 697,
+                        "referencedDeclaration": 705,
                         "src": "513:14:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_view$_t_address_$returns$_t_bool_$",
@@ -2689,7 +2689,7 @@
                         "name": "isPharmacie",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 766,
+                        "referencedDeclaration": 774,
                         "src": "556:11:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_view$_t_address_$returns$_t_bool_$",
@@ -2873,7 +2873,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.11",
-  "updatedAt": "2023-02-21T21:10:41.723Z",
+  "updatedAt": "2023-02-22T14:25:33.769Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

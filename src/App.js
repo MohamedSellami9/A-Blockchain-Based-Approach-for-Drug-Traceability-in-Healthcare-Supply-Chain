@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import './App.css';
 import { mintToken , order,accept ,deployClientContract,isClient,deployManufacturerContract,isManu,deployPh,isPharm,DrugNum} from './Web3Client';
 
 function App() {
@@ -9,11 +9,13 @@ function App() {
 	const [description, setDescription] = useState('');
 	const [price, setPrice] = useState('');
 	const [orderNum, setOrderNum] = useState('');
-
+	const [Adress, setAd] = useState('');
 	const handleNameChange = (event) => {
 		setName(event.target.value);
 	  };
-	
+	  const handleAdressChange = (event) => {
+		setAd(event.target.value);
+	  };
 	  const handleDescriptionChange = (event) => {
 		setDescription(event.target.value);
 	  };
@@ -103,6 +105,7 @@ function App() {
               <button onClick={() => deployClientContract()}>Give client role</button>
             </div>
 			 <div>
+			 <input type="text" value={Adress} onChange={handlePriceChange} />
               <button onClick={() => isClient()}>is he a Client</button>
             </div> 
 			<div>

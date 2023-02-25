@@ -58,7 +58,7 @@ contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
         _;
     }
 function drugCreate (string memory name1, string memory description1, int price) public payable onlyManufacturer nameDrug(name1, description1) returns (Drug memory){
-    require(msg.value >= 0.01 ether, "Payment amount is insufficient.");
+    require(msg.value <= 0.01 ether, "Payment amount is insufficient.");
     Drug memory drug = Drug({
         id : drugsNumber ,
         name : name1,
