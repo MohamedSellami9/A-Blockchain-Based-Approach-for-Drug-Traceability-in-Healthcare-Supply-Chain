@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
 import './App.css';
 import { mintToken , order,accept ,deployClientContract,isClient,deployManufacturerContract,isManu,deployPh,isPharm,DrugNum} from './Web3Client';
+import CreateDrugForm from './Components/CreateDrugForm';
+import OrderDrug from './Components/OrderDrug';
+import TokenMinted from './Components/TokenMinted';
+import Roles from './Components/Roles';
 
 function App() {
-	const [minted, setMinted] = useState(false);
-	const [orderd, setOrder] = useState(false);
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
 	const [price, setPrice] = useState('');
-	const [orderNum, setOrderNum] = useState('');
-	const [Adress, setAd] = useState('');
+	const [minted, setMinted] = useState(false);
+	const [orderd, setOrderd] = useState(false);
+	const [Adress, setAdress] = useState('');
 	const handleNameChange = (event) => {
 		setName(event.target.value);
 	  };
 	  const handleAdressChange = (event) => {
-		setAd(event.target.value);
+		setAdress(event.target.value);
 	  };
 	  const handleDescriptionChange = (event) => {
 		setDescription(event.target.value);
@@ -65,67 +68,35 @@ function App() {
 	};
 	return (
 		<div className="App">
-			 {!minted ? (
-				    <div>
-					<form>
-					  <label>
-						Name:
-						<input type="text" value={name} onChange={handleNameChange} />
-					  </label>
-					  <br />
-					  <label>
-						Description:
-						<input type="text" value={description} onChange={handleDescriptionChange} />
-					  </label>
-					  <br />
-					  <label>
-						Price:
-						<input type="text" value={price} onChange={handlePriceChange} />
-					  </label>
-					  <br />
-					  <button type="button" onClick={handleMintToken}>Create Drug</button>
-					</form>
-					<br />
-				  </div>
-			) : (
-				<p>Token minted successfully!</p>
-				
-			)} 
-			{!orderd ?(
-			<button onClick={() => orderr()}>OrderDrug</button>
-			):
-			<p>bien</p>}
-			{!orderd ?(
-			<button onClick={() => acceptt()}>accept</button>
-			):
-			<p>bien</p>}
-
-			<div>
-				<h4>Roles</h4>
-              <button onClick={() => deployClientContract()}>Give client role</button>
-            </div>
-			 <div>
-			 <input type="text" value={Adress} onChange={handlePriceChange} />
-              <button onClick={() => isClient()}>is he a Client</button>
-            </div> 
-			<div>
-              <button onClick={() => deployManufacturerContract()}>Manufacturer Deploy</button>
-            </div> 
-			<div>
-              <button onClick={() => isManu()}>is he a Manu</button>
-            </div> 
-			<div>
-              <button onClick={() => deployPh()}>Ph Deploy</button>
-            </div> 
-			<div>
-              <button onClick={() => isPharm()}>is he a Ph</button>
-			  <div>
-					<button onClick={() => Getdrug()}>getDrugsNumber</button>
-					</div>
-            </div> 
-			
-		</div>
+		<h1>Drug Marketplace</h1>
+		<CreateDrugForm 
+		  name={name} 
+		  description={description} 
+		  price={price} 
+		  handleNameChange={handleNameChange} 
+		  handleDescriptionChange={handleDescriptionChange} 
+		  handlePriceChange={handlePriceChange} 
+		  handleMintToken={handleMintToken} 
+		/>
+		<TokenMinted minted={minted} />
+		<OrderDrug 
+		  orderr={orderr} 
+		  acceptt={acceptt} 
+		  orderd={orderd} 
+		/>
+		<Roles 
+		  deployClientContract={deployClientContract} 
+		  Adress={Adress} 
+		  handleAdressChange={handleAdressChange} 
+		  isClient={isClient} 
+		  deployManufacturerContract={deployManufacturerContract} 
+		  isManu={isManu} 
+		  deployPh={deployPh} 
+		  isPharm={isPharm} 
+		  Getdrug={Getdrug} 
+		/>
+	  </div>
 	);
-}
-
-export default App;
+  }
+  
+  export default App;
