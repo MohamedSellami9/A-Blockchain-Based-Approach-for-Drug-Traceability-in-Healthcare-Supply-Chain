@@ -1,102 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link,useNavigate } from 'react-router-dom';
 import './App.css';
-import { mintToken , order,accept ,deployClientContract,isClient,deployManufacturerContract,isManu,deployPh,isPharm,DrugNum} from './Web3Client';
+import MainNav from './Components/Nav';
+import Login from './Components/Login';
+import Register from './Components/Register';
+import Home from './Components/Home';
 import CreateDrugForm from './Components/CreateDrugForm';
 import OrderDrug from './Components/OrderDrug';
 import TokenMinted from './Components/TokenMinted';
 import Roles from './Components/Roles';
+import {signOut} from "firebase/auth";
+import { auth } from "./firebase-config";
+
 
 function App() {
-	const [name, setName] = useState('');
-	const [description, setDescription] = useState('');
-	const [price, setPrice] = useState('');
-	const [minted, setMinted] = useState(false);
-	const [orderd, setOrderd] = useState(false);
-	const [Adress, setAdress] = useState('');
-	const handleNameChange = (event) => {
-		setName(event.target.value);
-	  };
-	  const handleAdressChange = (event) => {
-		setAdress(event.target.value);
-	  };
-	  const handleDescriptionChange = (event) => {
-		setDescription(event.target.value);
-	  };
-	  const handlePriceChange = (event) => {
-		setPrice(event.target.value);
-	  };
-	  const handleMintToken = async () => {
-		const drug = await mintToken(name, description,price);
-		console.log('Minted drug:', drug);
-	  };
-	 const mint = () => {
-	 	mintToken()
-	 		.then((tx) => {
-	 			console.log(tx);
-	 		})
-	 		.catch((err) => {
-	 			console.log(err);
-	 		});
-	 };
-
-	 const orderr = () => {
-		order()
-			.then((tx) => {
-				console.log(tx);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
-	const acceptt = () => {
-		accept()
-			.then((tx) => {
-				console.log(tx);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
-	const Getdrug = () => {
-		DrugNum()
-			.then((tx) => {
-				console.log(tx);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
-	return (
-		<div className="App">
-		<h1>Drug Marketplace</h1>
-		<CreateDrugForm 
-		  name={name} 
-		  description={description} 
-		  price={price} 
-		  handleNameChange={handleNameChange} 
-		  handleDescriptionChange={handleDescriptionChange} 
-		  handlePriceChange={handlePriceChange} 
-		  handleMintToken={handleMintToken} 
-		/>
-		<TokenMinted minted={minted} />
-		<OrderDrug 
-		  orderr={orderr} 
-		  acceptt={acceptt} 
-		  orderd={orderd} 
-		/>
-		<Roles 
-		  deployClientContract={deployClientContract} 
-		  Adress={Adress} 
-		  handleAdressChange={handleAdressChange} 
-		  isClient={isClient} 
-		  deployManufacturerContract={deployManufacturerContract} 
-		  isManu={isManu} 
-		  deployPh={deployPh} 
-		  isPharm={isPharm} 
-		  Getdrug={Getdrug} 
-		/>
-	  </div>
-	);
-  }
+  const [user, setUser] = useState();
+  auth.onAuthStateChanged(function(user) {
+    if (user) {
+      setUser(user);
+    } else {
+      setUser(null);    }
+  });
+ console.log(user);
+  useEffect(() => {
+    
   
-  export default App;
+  }, []);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    
+    };
+
+  return (
+    <div className="App">
+      <Router>
+        <MainNav auth={auth} logout={handleLogout}/>
+        <Routes>
+          <Route path="/" element={<Home/>} />
+          <Route
+            path="/create"
+            element={<CreateDrugForm user={user} />}
+          />
+          <Route
+            path="/order"
+            element={<OrderDrug user={user} />}
+          />
+          <Route path="/roles"  element={<Roles/>} />
+          <Route path="/login"  element={<Login/>} />
+          <Route path="/register"  element={<Register/>} />
+        </Routes>
+      </Router>
+    </div>
+  );
+}
+
+export default App;
