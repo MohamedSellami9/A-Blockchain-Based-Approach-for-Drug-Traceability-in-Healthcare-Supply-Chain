@@ -6,35 +6,39 @@ import { BrowserRouter as Router, Routes, Route, Link,useNavigate } from 'react-
 const MainNav = (props) => {
     
   return (
-    <Nav  activeKey="/home"
-    onSelect={(selectedKey) => alert(`selected ${selectedKey}`)}>
+    <Nav  variant="tabs" defaultActiveKey="/home"
+    //onSelect={(selectedKey) => alert(`selected ${selectedKey}`)}
+    >
     
       <LinkContainer to="/">
-        <Nav.Link >Home</Nav.Link>
+        <Nav.Link>Home</Nav.Link>
       </LinkContainer>
       {props.auth.currentUser ? (
         <>
-          <Nav.Item>
-            <Link to="/create">Create Drug</Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Link to="/order">Order Drug</Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Link to="/roles">Roles</Link>
-          </Nav.Item>
-          <Nav.Item>
-            <button onClick={props.logout}>Logout</button>
-          </Nav.Item>
+          
+            <LinkContainer to="/create">
+              <Nav.Item>Create Drug</Nav.Item>
+              </LinkContainer>
+              <LinkContainer to="/order">
+              <Nav.Item>Order Drug</Nav.Item>
+              </LinkContainer>
+              <LinkContainer to="/roles">
+              <Nav.Item>Roles</Nav.Item>
+              </LinkContainer>
+              
+              <Nav.Item onClick={props.logout} >Logout</Nav.Item>
+      
         </>
       ) : (
         <>
-          <Nav.Item>
-            <Link to="/login">Login</Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Link to="/register">Register</Link>
-          </Nav.Item>
+        <LinkContainer to="/login">
+              <Nav.Item>Login</Nav.Item>
+        </LinkContainer>
+              <LinkContainer to="/register">
+              <Nav.Item>Register</Nav.Item>
+              </LinkContainer>
+          
+           
         </>
       )}
     
