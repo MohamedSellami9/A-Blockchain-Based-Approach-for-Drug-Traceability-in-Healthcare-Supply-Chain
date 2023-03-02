@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import Button from 'react-bootstrap/Button';
 
 import { auth } from "../firebase-config";
 import {
@@ -51,7 +51,7 @@ function Register() {
         </label>
         <br />
         {errorMessage && <p>{errorMessage}</p>}
-        <button disabled={!buttonstatus} type="submit">Register</button>
+        <Button variant='dark' disabled={!buttonstatus} type="submit">Register</Button>
       </form>
       <p>Already have an account? <Link to="/login">Login</Link></p>
     </div>

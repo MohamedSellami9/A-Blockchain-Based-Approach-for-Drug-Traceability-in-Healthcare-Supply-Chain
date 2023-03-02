@@ -1,28 +1,28 @@
 import React from 'react';
 import '../App.css';
-
+import Button from 'react-bootstrap/Button';
 function Roles({ deployClientContract, Adress, handleAdressChange, isClient, deployManufacturerContract, isManu, deployPh, isPharm, Getdrug }) {
   return (
     <div>
       <h4>Roles</h4>
-      <button onClick={deployClientContract}>Give client role</button>
+      <Button variant='dark' onClick={deployClientContract}>Give client role</Button>
       <div>
         <input type="text" value={Adress} onChange={handleAdressChange} />
-        <button onClick={isClient}>Is he a Client</button>
+        <Button variant='dark' onClick={isClient}>Is he a Client</Button>
       </div>
       <div>
-        <button onClick={deployManufacturerContract}>Manufacturer Deploy</button>
+        <Button variant='dark' onClick={deployManufacturerContract}>Manufacturer Deploy</Button>
       </div>
       <div>
-        <button onClick={isManu}>Is he a Manu</button>
+        <Button variant='dark' onClick={isManu}>Is he a Manu</Button>
       </div>
       <div>
-        <button onClick={deployPh}>Ph Deploy</button>
+        <Button variant='dark' onClick={deployPh}>Ph Deploy</Button>
       </div>
       <div>
-        <button onClick={isPharm}>Is he a Ph</button>
+        <Button variant='dark' onClick={isPharm}>Is he a Ph</Button>
         <div>
-          <button onClick={Getdrug}>Get Drugs Number</button>
+          <Button variant='dark' onClick={Getdrug}>Get Drugs Number</Button>
         </div>
       </div>
     </div>

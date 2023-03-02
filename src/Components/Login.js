@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import Button from 'react-bootstrap/Button';
 
 import { auth } from "../firebase-config";
 import {
@@ -51,7 +51,7 @@ function Login() {
         </label>
         <br />
         {errorMessage && <p>{errorMessage}</p>}
-        <button type="submit">Login</button>
+        <Button type="submit">Login</Button>
       </form>
       <p>Don't have an account? <Link to="/register">Register</Link></p>
     </div>

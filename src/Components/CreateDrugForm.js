@@ -1,6 +1,6 @@
 import React from 'react';
 import '../App.css';
-
+import Button from 'react-bootstrap/Button';
 function CreateDrugForm({ name, description, price, handleNameChange, handleDescriptionChange, handlePriceChange, handleMintToken }) {
   return (
     <div>
@@ -20,7 +20,7 @@ function CreateDrugForm({ name, description, price, handleNameChange, handleDesc
           <input type="text" value={price} onChange={handlePriceChange} />
         </label>
         <br />
-        <button type="button" onClick={handleMintToken}>Create Drug</button>
+        <Button variant='dark' onClick={handleMintToken}>Create Drug</Button>
       </form>
       <br />
     </div>

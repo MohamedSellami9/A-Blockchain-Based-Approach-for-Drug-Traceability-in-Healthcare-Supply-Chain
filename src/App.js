@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link,useNavigate } from 'react-router-dom';
 import './App.css';
-import MainNav from './Components/Nav';
+import Sidebar from './Components/Navbar';
 import Login from './Components/Login';
 import Register from './Components/Register';
 import Home from './Components/Home';
@@ -35,7 +35,7 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <MainNav auth={auth} logout={handleLogout}/>
+        <Sidebar auth={auth} logout={handleLogout}/>
         <Routes>
           <Route path="/" element={<Home/>} />
           <Route

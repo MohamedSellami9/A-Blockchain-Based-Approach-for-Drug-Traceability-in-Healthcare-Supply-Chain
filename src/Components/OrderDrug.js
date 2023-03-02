@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from 'react-bootstrap/Button';
 import '../App.css';
 
 function OrderDrug({ orderr, acceptt, orderd }) {
@@ -6,11 +7,11 @@ function OrderDrug({ orderr, acceptt, orderd }) {
     <div>
       {!orderd ? (
         <div>
-          <button onClick={orderr}>Order Drug</button>
+          <Button variant='dark' onClick={orderr}>Order Drug</Button>
         </div>
       ) : (
         <div>
-          <button onClick={acceptt}>Accept</button>
+          <Button variant='dark' onClick={acceptt}>Accept</Button>
         </div>
       )}
     </div>
