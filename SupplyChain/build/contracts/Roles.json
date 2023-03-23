@@ -10,7 +10,7 @@
   "sourceMap": "62:546:6:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;",
   "deployedSourceMap": "62:546:6:-:0;;;;;;;;",
   "source": "// SPDX-License-Identifier: MIT\r\n\r\npragma solidity ^0.8.0;\r\n\r\nlibrary Roles {\r\n  struct Role {\r\n    mapping (address => bool) roles;\r\n  }\r\nfunction has(Role storage role, address account)internal view returns (bool){\r\n    return role.roles[account];\r\n }\r\nfunction add(Role storage role, address account)internal  {\r\n    require(!has(role, account), \"This address already has this role\");\r\n    role.roles[account] = true;\r\n}\r\nfunction remove(Role storage role, address account)internal {\r\n    require(has(role, account), \"This address does not have this role yet\");\r\n    role.roles[account] = false;\r\n  }\r\n\r\n}\r\n\r\n",
-  "sourcePath": "D:\\PCD\\supply\\SupplyChain\\contracts\\roles\\Roles.sol",
+  "sourcePath": "C:\\Users\\FiaZZ\\A-Blockchain-Based-Approach-for-Drug-Traceability-in-Healthcare-Supply-Chain\\SupplyChain\\contracts\\roles\\Roles.sol",
   "ast": {
     "absolutePath": "project:/contracts/roles/Roles.sol",
     "exportedSymbols": {
@@ -955,7 +955,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.11",
-  "updatedAt": "2023-02-26T14:32:46.607Z",
+  "updatedAt": "2023-03-23T13:05:02.363Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
