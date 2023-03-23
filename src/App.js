@@ -16,14 +16,14 @@ import { mintToken , order,accept ,deployClientContract,isClient,deployManufactu
 
 function App() {
   const [user, setUser] = useState();
-  auth.onAuthStateChanged(function(user) {
-    if (user) {
-      setUser(user);
-    } else {
-      setUser(null);    }
-  });
+    useEffect(() => {
+      const unsubscribe = auth.onAuthStateChanged((user) => {
+        setUser(user);
+      });
+      return unsubscribe; 
+      }, []);
 
-  const handleLogout = async () => {
+   const handleLogout = async () => {
     await signOut(auth);
     };
   const [minted, setMinted] = useState(false);
@@ -33,18 +33,24 @@ function App() {
 	const [price, setPrice] = useState('');
 	const [orderNum, setOrderNum] = useState('');
 	const [Adress, setAd] = useState('');
-	const handleNameChange = (event) => {
-		setName(event.target.value);
-	  };
-	  const handleAdressChange = (event) => {
-		setAd(event.target.value);
-	  };
-	  const handleDescriptionChange = (event) => {
-		setDescription(event.target.value);
-	  };
-	  const handlePriceChange = (event) => {
-		setPrice(event.target.value);
-	  };
+const handleNameChange = (event) => {
+    event.preventDefault();
+    setName(event.target.value);
+};
+
+const handleDescriptionChange = (event) => {
+    event.preventDefault();
+    setDescription(event.target.value);
+};
+
+const handlePriceChange = (event) => {
+    event.preventDefault();
+    setPrice(event.target.value);
+};
+  const handleAdressChange = (event) => {
+    event.preventDefault();
+      setAd(event.target.value);
+      };
 	  const handleMintToken = async () => {
 		const drug = await mintToken(name, description,price);
 		console.log('Minted drug:', drug);
