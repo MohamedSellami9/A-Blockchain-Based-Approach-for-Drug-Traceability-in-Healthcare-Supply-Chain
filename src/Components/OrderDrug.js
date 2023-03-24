@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import { getDrugsAvailable, subscribeToDrugAdded } from '../Web3Client.js';
 import { AgGridReact } from 'ag-grid-react';
@@ -8,6 +8,7 @@ import '../App.css';
 function OrderDrug({ orderr, acceptt, orderd }) {
   const [drugsAvailable, setDrugsAvailable] = useState([]);
   const [selectedDrugs, setSelectedDrugs] = useState([]);
+  const gridRef = useRef();
 
   useEffect(() => {
     const fetchDrugs = async () => {
@@ -16,7 +17,7 @@ function OrderDrug({ orderr, acceptt, orderd }) {
     };
 
     fetchDrugs();
-    
+
     const unsubscribe = subscribeToDrugAdded(() => {
       fetchDrugs();
     });
@@ -25,6 +26,14 @@ function OrderDrug({ orderr, acceptt, orderd }) {
   }, []);
 
   const columnDefs = [
+    {
+      headerName: "",
+      field: "checkbox",
+      headerCheckboxSelection: true,
+      headerCheckboxSelectionFilteredOnly: true,
+      checkboxSelection: true,
+      width: 50
+    },
     { field: 'id', headerName: 'ID', width: 90 },
     { field: 'name', headerName: 'Name', width: 150 },
     { field: 'description', headerName: 'Description', width: 250 },
@@ -40,21 +49,24 @@ function OrderDrug({ orderr, acceptt, orderd }) {
     manufacturer: drug.manufacturer,
   }));
 
-  const handleSelectionChanged = () => {
-    const selectedNodes = gridApi.getSelectedNodes();
-    const selectedData = selectedNodes.map(node => node.data);
-    setSelectedDrugs(selectedData);
-  }
-
+  const onSelectionChanged = useCallback(() => {
+    const selectedRows = gridRef.current.api.getSelectedRows();
+    const selectedRowsElement = document.querySelector('#selectedRows');
+    console.log(selectedRows);
+    if (selectedRowsElement) {
+      selectedRowsElement.innerHTML =
+        selectedRows.length === 1 ? selectedRows[0].athlete : '';
+    }
+  }, []);
   const handleButtonClick = () => {
-    console.log(selectedDrugs);
+    const selectedRows = gridRef.current.api.getSelectedRows();
+    const selectedIds = selectedRows.map(row => row.id);
+    console.log(selectedIds);
   }
-
-  let gridApi;
-
-  const onGridReady = (params) => {
-    gridApi = params.api;
-  };
+  const onGridReady = useCallback(params => {
+    gridRef.current = params;
+    params.api.sizeColumnsToFit();
+  }, []);
 
   return (
     <div>
@@ -66,7 +78,7 @@ function OrderDrug({ orderr, acceptt, orderd }) {
           columnDefs={columnDefs}
           rowData={rowData}
           rowSelection="multiple"
-          onSelectionChanged={handleSelectionChanged}
+          onSelectionChanged={onSelectionChanged}
           onGridReady={onGridReady}
         />
       </div>
@@ -87,3 +99,4 @@ function OrderDrug({ orderr, acceptt, orderd }) {
 }
 
 export default OrderDrug;
+
