@@ -4,6 +4,10 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+import "ag-grid-community/styles/ag-theme-material.css";
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

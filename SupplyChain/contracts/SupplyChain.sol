@@ -32,9 +32,17 @@ contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
     constructor(){       
 
     }
-  function getDrugsNumber() public view returns (uint) {
+    function getDrugsNumber() public view returns (uint) {
     return drugsNumber;
 }   
+function getAllDrug() public view returns (Drug[] memory) {
+    Drug[] memory drugsAvailable = new Drug[](drugsNumber);
+    for (uint i = 0; i < drugsNumber; i++) {    
+        if (drugs[i].Status == Status.Created){
+        drugsAvailable[i] = drugs[i];}
+    }
+    return drugsAvailable;
+}
     modifier orderCond(uint _index){
         require(drugs[_index].manufacturer != msg.sender ,"erroooooooooooor");
     _;
@@ -57,7 +65,9 @@ contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
         require(bytes(_description1).length > 0, "String must not be empty");
         _;
     }
-function drugCreate (string memory name1, string memory description1, int price) public payable onlyManufacturer nameDrug(name1, description1) returns (Drug memory){
+event DrugAdded(uint indexed id, string name, string description, address indexed manufacturer, int price);
+
+function drugCreate(string memory name1, string memory description1, int price) public payable onlyManufacturer nameDrug(name1, description1) returns (Drug memory) {
     require(msg.value <= 0.01 ether, "Payment amount is insufficient.");
     Drug memory drug = Drug({
         id : drugsNumber ,
@@ -71,9 +81,10 @@ function drugCreate (string memory name1, string memory description1, int price)
 
     drugs[drugsNumber]= drug;
     drugsNumber++;
+    emit DrugAdded(drug.id, drug.name, drug.description, drug.manufacturer, drug.price);
     return drug;
-
 }
+
 //orderCond(index)
     function orderDrug(uint index , address distributor ) public onlyPharmacie  returns(Order memory) {
         Order memory order = Order({

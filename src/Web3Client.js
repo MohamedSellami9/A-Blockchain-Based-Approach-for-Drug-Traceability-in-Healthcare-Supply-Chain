@@ -198,6 +198,7 @@ export const mintToken = async (name, description, price) => {
 	   .orderDrug(0,selectedAccount)
 		.call();
 };
+
 export const accept = async () => {
 	if (!isInitialized) {
 		await init();
@@ -216,3 +217,29 @@ export const DrugNum = async () => {
 	   .getDrugsNumber()
 		.call();
 };
+export const getDrugsAvailable = async () => {
+    if (!isInitialized) {
+        await init();
+    }
+
+    const drugsAvailable = await supplyContract.methods.getAllDrug().call();
+    const drugsAvailableObj = drugsAvailable.map((drug) => ({
+        id: drug.id,
+        name: drug.name,
+        description: drug.description,
+        price: drug.price ,
+		manufacturer: drug.manufacturer 
+	  }));
+    return drugsAvailableObj;
+};
+
+
+export function subscribeToDrugAdded(callback) {
+	if (supplyContract) {
+	  supplyContract.events.DrugAdded()
+		.on('data', callback)
+		.on('error', console.error);
+	}
+  }
+  
+
