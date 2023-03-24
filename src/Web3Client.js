@@ -6,7 +6,7 @@ import PhContract from 'contracts/Pharmacy.json'
 
 const web3 = new Web3('http://localhost:7545'); 
 
-let selectedAccount;
+export let selectedAccount;
 let supplyContract;
 let clientContract;
 let Clientrole;

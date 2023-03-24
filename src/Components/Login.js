@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
+import { selectedAccount } from '../Web3Client';
 
 import { auth } from "../firebase-config";
 import {
