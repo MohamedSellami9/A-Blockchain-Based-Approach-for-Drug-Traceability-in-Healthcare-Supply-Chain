@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
-import { getDrugsAvailable, subscribeToDrugAdded } from '../Web3Client.js';
+import { order,getDrugsAvailable, selectedAccount, subscribeToDrugAdded } from '../Web3Client.js';
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community";
 import '../App.css';
@@ -62,6 +62,10 @@ function OrderDrug({ orderr, acceptt, orderd }) {
     const selectedRows = gridRef.current.api.getSelectedRows();
     const selectedIds = selectedRows.map(row => row.id);
     console.log(selectedIds);
+    for (let id in selectedIds){
+      order(id,selectedAccount);
+      console.log(order(id,selectedAccount));
+    }
   }
   const onGridReady = useCallback(params => {
     gridRef.current = params;
