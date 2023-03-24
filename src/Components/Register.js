@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
+import { selectedAccount } from '../Web3Client';
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  setDoc
+} from "firebase/firestore";
 
-import { auth } from "../firebase-config";
+import { auth,db } from "../firebase-config";
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
@@ -14,7 +24,7 @@ function Register() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
   const [buttonstatus, setbuttonstatus] = useState(true)
-
+  const usersCollectionRef = collection(db, "users");
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
   const navigate= useNavigate()
@@ -28,7 +38,18 @@ function Register() {
         auth,
         email,
         password
-        )
+        );
+         const docRef = doc(db, "users", auth.currentUser.uid );
+        setDoc(docRef, {
+          useruid : auth.currentUser.uid,
+          wallet : selectedAccount,
+          role:"costumer"
+        }).then(() => {
+            navigate('/')
+        })
+        .catch(error => {
+            console.log(error);
+})  
         navigate("/");
     } catch (error) {
         if(error.message == "Firebase: Error (auth/email-already-in-use).")
