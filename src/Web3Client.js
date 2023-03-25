@@ -189,13 +189,13 @@ export const mintToken = async (name, description, price) => {
 //     return  instance.isClient(selectedAccount).call();
 
 //   };
- export const order = async (Id) => {
+ export const order = async () => {
 	if (!isInitialized) {
 		await init();
 	}
 
    return supplyContract.methods
-	   .orderDrug(Id,selectedAccount)
+	   .orderDrug(0,selectedAccount)
 		.call();
 };
 

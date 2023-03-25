@@ -12,17 +12,22 @@ import Roles from './Components/Roles';
 import {signOut} from "firebase/auth";
 import { auth } from "./firebase-config";
 import { mintToken , order,accept ,deployClientContract,isClient,deployManufacturerContract,isManu,deployPh,isPharm,DrugNum} from './Web3Client';
+import { init } from './Web3Client';
 
 
 function App() {
   const [user, setUser] = useState();
+  
     useEffect(() => {
       const unsubscribe = auth.onAuthStateChanged((user) => {
         setUser(user);
       });
       return unsubscribe; 
       }, []);
-
+	  useEffect(() => {init();
+		
+		}, []);
+		
    const handleLogout = async () => {
     await signOut(auth);
     };

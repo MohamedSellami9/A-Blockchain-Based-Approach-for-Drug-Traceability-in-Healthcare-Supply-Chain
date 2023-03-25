@@ -8,42 +8,56 @@ import {
   updateDoc,
   deleteDoc,
   doc,
-  setDoc
+  setDoc, query, where
 } from "firebase/firestore";
 
 import { auth,db } from "../firebase-config";
 import {
     createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    onAuthStateChanged,
-    signOut,
 } from "firebase/auth";
 import { Link, useNavigate } from 'react-router-dom';
 function Register() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formdata, setformdata] = useState({email:'',
+                                            password:'',
+                                          role:'client'});
   const [errorMessage, setErrorMessage] = useState(null);
   const [buttonstatus, setbuttonstatus] = useState(true)
   const usersCollectionRef = collection(db, "users");
-  const handleEmailChange = (e) => setEmail(e.target.value);
-  const handlePasswordChange = (e) => setPassword(e.target.value);
+  
+  function handleChange(event){
+    setformdata(old => {
+        return {
+            ...old,
+            [event.target.name]: event.target.value
+        }
+    })
+}
   const navigate= useNavigate()
   const handleRegister = async(e) => {
     
         e.preventDefault()
         setbuttonstatus(false)
+        const q=query(usersCollectionRef, where("wallet", "==",selectedAccount));
     try {
-
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        setErrorMessage("This wallet address is already registered!");
+        setbuttonstatus(true);
+        return;
+      }
         const user = await createUserWithEmailAndPassword(
         auth,
-        email,
-        password
+        formdata.email,
+        formdata.password
         );
+        
          const docRef = doc(db, "users", auth.currentUser.uid );
+         
+         console.log(docRef);
         setDoc(docRef, {
           useruid : auth.currentUser.uid,
           wallet : selectedAccount,
-          role:"costumer"
+          role:formdata.role
         }).then(() => {
             navigate('/')
         })
@@ -63,14 +77,23 @@ function Register() {
       <form onSubmit={handleRegister}>
         <label>
           Email:
-          <input type="email" value={email} onChange={handleEmailChange} required />
+          <input name='email' type="email" value={formdata.email} onChange={handleChange} required />
         </label>
         <br />
         <label>
           Password:
-          <input type="password" value={password} onChange={handlePasswordChange} required />
+          <input name='password' type="password" value={formdata.password} onChange={handleChange} required />
         </label>
         <br />
+        <label>
+          Choose role:
+          <select name='role' value={formdata.role} onChange={handleChange}>
+          <option value="client">client</option>
+            <option value="manufacturer">manufacturer</option>
+            <option value="pharmacy">pharmacy</option>
+            
+          </select>
+        </label>
         {errorMessage && <p>{errorMessage}</p>}
         <Button variant='dark' disabled={!buttonstatus} type="submit">Register</Button>
       </form>
