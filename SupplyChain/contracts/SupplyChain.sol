@@ -9,7 +9,8 @@ contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
     enum OrderStatus {Ordered ,Accepted , Declined, Completed}
     enum Status {Created  , Ordered , Delivering , Delivered , Sold }
     mapping(uint => Drug) public drugs; 
-    uint public drugsNumber=0;   
+    uint public drugsNumber=0;  
+ 
 
     mapping(uint => Order) public orders; 
     uint public orderNumber=0;   
@@ -42,6 +43,23 @@ function getAllDrug() public view returns (Drug[] memory) {
         drugsAvailable[i] = drugs[i];}
     }
     return drugsAvailable;
+}
+
+function getAllOrdersAccepted() public view returns (Order[] memory) {
+    Order[] memory ordersAvailable = new Order[](orderNumber);
+    for (uint i = 0; i < drugsNumber; i++) {    
+        if (orders[i].Status == OrderStatus.Accepted){
+        ordersAvailable[i] = orders[i];}
+    }
+    return ordersAvailable;
+}
+function getAllOrdersOrdred() public view returns (Order[] memory) {
+    Order[] memory ordersAvailable = new Order[](orderNumber);
+    for (uint i = 0; i < drugsNumber; i++) {    
+        if (orders[i].Status == OrderStatus.Ordered){
+        ordersAvailable[i] = orders[i];}
+    }
+    return ordersAvailable;
 }
     modifier orderCond(uint _index){
         require(drugs[_index].manufacturer != msg.sender ,"erroooooooooooor");

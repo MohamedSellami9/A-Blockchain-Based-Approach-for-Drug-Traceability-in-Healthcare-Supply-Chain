@@ -67,7 +67,7 @@ function Register() {
         navigate("/");
     } catch (error) {
         if(error.message == "Firebase: Error (auth/email-already-in-use).")
-        alert("Email déjà utilisé !");
+        setErrorMessage("Email déjà utilisé !");
     }
     };
 

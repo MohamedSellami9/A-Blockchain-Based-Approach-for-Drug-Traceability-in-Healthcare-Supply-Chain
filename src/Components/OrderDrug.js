@@ -76,7 +76,7 @@ function OrderDrug({ orderr, acceptt, orderd }) {
     <div>
       <div
         className="ag-theme-material"
-        style={{ margin:'10px', marginLeft:'23%', height: '500px', width: '800px' }}
+        style={{margin:'23%', marginTop:'10px',marginBottom:'10px' , height: '500px', width: '60%' }}
       >
         <AgGridReact
           columnDefs={columnDefs}

@@ -243,3 +243,18 @@ export function subscribeToDrugAdded(callback) {
   }
   
 
+  export const getAllOrdersOrdred = async () => {
+    if (!isInitialized) {
+        await init();
+    }
+
+    const ordersAvailable = await supplyContract.methods.getAllOrdersOrdred().call();
+    const orderssAvailableObj = ordersAvailable.map((order) => ({
+		id: order.id ,
+		drugIndex:order.drugIndex,
+		pharmacy:order.pharmacy,
+		distributor:order.distributor,
+		Status:order.Status
+	  }));
+    return orderssAvailableObj;
+};
