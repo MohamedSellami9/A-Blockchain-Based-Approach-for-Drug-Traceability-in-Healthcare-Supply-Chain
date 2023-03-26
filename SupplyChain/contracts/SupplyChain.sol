@@ -35,13 +35,27 @@ contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
     function getDrugsNumber() public view returns (uint) {
     return drugsNumber;
 }   
+function getDrug (uint id)public view returns(Drug memory){
+    return drugs[id];
+}
+function getOrder (uint id)public view returns(Order memory){
+    return orders[id];
+}
 function getAllDrug() public view returns (Drug[] memory) {
     Drug[] memory drugsAvailable = new Drug[](drugsNumber);
     for (uint i = 0; i < drugsNumber; i++) {    
-        if (drugs[i].Status == Status.Created){
+        if ((drugs[i].Status == Status.Created)&&(drugs[i].price != 0)){
         drugsAvailable[i] = drugs[i];}
     }
     return drugsAvailable;
+}
+function getAllOrders() public view returns (Order[] memory) {
+    Order[] memory OrdersAvailable = new Order[](orderNumber);
+    for (uint i = 0; i < orderNumber; i++) {    
+        if ((drugs[i].Status == Status.Ordered)){
+        OrdersAvailable[i] = orders[i];}
+    }
+    return OrdersAvailable;
 }
     modifier orderCond(uint _index){
         require(drugs[_index].manufacturer != msg.sender ,"erroooooooooooor");
@@ -85,7 +99,12 @@ function drugCreate(string memory name1, string memory description1, int price) 
     return drug;
 }
 
-//orderCond(index)
+event OrderAdded(
+  uint id,
+  uint drugIndex,
+  address pharmacy,
+  address distributor);
+
     function orderDrug(uint index , address distributor ) public onlyPharmacie  returns(Order memory) {
         Order memory order = Order({
             id : orderNumber ,
@@ -97,6 +116,7 @@ function drugCreate(string memory name1, string memory description1, int price) 
         orders[orderNumber]= order;
         orderNumber++;
         drugs[index].Status = Status.Ordered;
+        emit OrderAdded(order.id, order.drugIndex, order.pharmacy, order.distributor);
         return order;
     }
     function priceChanger(uint index , int price) public onlyPharmacie {
