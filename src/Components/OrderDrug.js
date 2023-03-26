@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
-import { order,getDrugsAvailable, selectedAccount, subscribeToDrugAdded } from '../Web3Client.js';
+import { order,getDrugsAvailable, selectedAccount, subscribeToDrugAdded,getDrug } from '../Web3Client.js';
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community";
 import '../App.css';
@@ -53,20 +53,23 @@ function OrderDrug({ orderr, acceptt, orderd }) {
     const selectedRows = gridRef.current.api.getSelectedRows();
     const selectedRowsElement = document.querySelector('#selectedRows');
     console.log(selectedRows);
-    if (selectedRowsElement) {
+        if (selectedRowsElement) {
       selectedRowsElement.innerHTML =
         selectedRows.length === 1 ? selectedRows[0].athlete : '';
     }
   }, []);
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     const selectedRows = gridRef.current.api.getSelectedRows();
     const selectedIds = selectedRows.map(row => row.id);
     console.log(selectedIds);
     for (let id in selectedIds){
-      order(id,selectedAccount);
-      console.log(order(id,selectedAccount));
+      let ord = await order(selectedRows[id].id);
+      let drugIndex = ord.drugIndex;
+      console.log(drugIndex); 
+      console.log(await getDrug(drugIndex));
     }
   }
+  
   const onGridReady = useCallback(params => {
     gridRef.current = params;
     params.api.sizeColumnsToFit();

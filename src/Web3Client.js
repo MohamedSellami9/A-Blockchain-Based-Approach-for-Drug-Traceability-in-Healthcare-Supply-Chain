@@ -189,15 +189,18 @@ export const mintToken = async (name, description, price) => {
 //     return  instance.isClient(selectedAccount).call();
 
 //   };
- export const order = async () => {
+export const order = async (id) => {
 	if (!isInitialized) {
-		await init();
+	  await init();
 	}
-
-   return supplyContract.methods
-	   .orderDrug(0,selectedAccount)
-		.call();
-};
+  
+	const result = await supplyContract.methods
+	  .orderDrug(id, selectedAccount)
+	  .send({ from: selectedAccount });
+  
+	return result;
+  };
+  
 
 export const accept = async () => {
 	if (!isInitialized) {
@@ -241,6 +244,47 @@ export function subscribeToDrugAdded(callback) {
 		.on('error', console.error);
 	}
   }
+  export const getDrug = async (id) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   return supplyContract.methods
+	   .getDrug(id)
+		.call();
+};
+export const getOrdersAvailable = async () => {
+    if (!isInitialized) {
+        await init();
+    }
+
+    const OrdersAvailable = await supplyContract.methods.getAllOrders().call();
+    const OrdersAvailableObj = OrdersAvailable.map((order) => ({
+        id: order.id,
+        drugIndex: order.drugIndex,
+        pharmacy: order.pharmacy,
+
+	  }));
+    return OrdersAvailableObj;
+};
+
+export function subscribeToOrderAdded(callback) {
+	if (supplyContract) {
+	  supplyContract.events.OrderAdded()
+		.on('data', callback)
+		.on('error', console.error);
+	}
+  }
+  export const getOrder = async (id) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   return supplyContract.methods
+	   .getOrder(id)
+		.call();
+};
+
   
 
   export const getAllOrdersOrdred = async () => {
