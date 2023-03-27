@@ -19,6 +19,7 @@ function OrderGrid({}) {
             console.log("Accepted order:", row);
             const accept = await Accept(row.id);
             console.log(console.log(row.id));
+            gridRef.current.api.applyTransaction({ remove: [row] });
           },
           onDecline: async (row) => {
             console.log("Declined order:", row);
@@ -36,7 +37,8 @@ function OrderGrid({}) {
   useEffect(() => {
     const fetchOrders = async () => {
       const orders = await getOrdersAvailable();
-      setOrdersAvailable(orders);
+      const filteredOrders = orders.filter(order => order.pharmacy != "0x0000000000000000000000000000000000000000");
+      setOrdersAvailable(filteredOrders);
       const data = orders.map(order => ({
         id: order.id,
         drugIndex: order.drugIndex,

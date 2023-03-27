@@ -13,7 +13,8 @@ function OrderDrug({ orderr, acceptt, orderd }) {
   useEffect(() => {
     const fetchDrugs = async () => {
       const drugs = await getDrugsAvailable();
-      setDrugsAvailable(drugs);
+      const filteredDrugs = drugs.filter(order => order.manufacturer != "0x0000000000000000000000000000000000000000");
+      setDrugsAvailable(filteredDrugs);
     };
 
     fetchDrugs();
@@ -65,10 +66,10 @@ function OrderDrug({ orderr, acceptt, orderd }) {
     for (let id in selectedIds){
       let ord = await order(selectedRows[id].id);
       let drugIndex = ord.drugIndex;
-      console.log(drugIndex); 
-      console.log(await getDrug(drugIndex));
+      console.log(drugIndex);
     }
-  }
+    gridRef.current.api.applyTransaction({ remove: selectedRows });
+  }  
   
   const onGridReady = useCallback(params => {
     gridRef.current = params;
