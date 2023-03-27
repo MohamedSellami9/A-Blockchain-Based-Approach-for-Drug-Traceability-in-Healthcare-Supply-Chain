@@ -4,9 +4,6 @@ import { selectedAccount } from '../Web3Client';
 import {
   collection,
   getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
   doc,
   setDoc, query, where
 } from "firebase/firestore";
@@ -16,7 +13,7 @@ import {
     createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { Link, useNavigate } from 'react-router-dom';
-function Register() {
+function Register(props) {
   const [formdata, setformdata] = useState({email:'',
                                             password:'',
                                           role:'client'});
@@ -52,19 +49,16 @@ function Register() {
         );
         
          const docRef = doc(db, "users", auth.currentUser.uid );
-         
-         console.log(docRef);
         setDoc(docRef, {
           useruid : auth.currentUser.uid,
           wallet : selectedAccount,
           role:formdata.role
         }).then(() => {
-            navigate('/')
+            navigate('/');
         })
         .catch(error => {
             console.log(error);
 })  
-        navigate("/");
     } catch (error) {
         if(error.message == "Firebase: Error (auth/email-already-in-use).")
         setErrorMessage("Email déjà utilisé !");

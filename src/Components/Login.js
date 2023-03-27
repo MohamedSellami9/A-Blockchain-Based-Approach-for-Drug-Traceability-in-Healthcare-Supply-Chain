@@ -19,7 +19,7 @@ import {
 } from "firebase/auth";
 import { Link, useNavigate } from 'react-router-dom';
 
-function Login() {
+function Login(props) {
   const [formdata, setformdata] = useState({email:'',
                                             password:''
                                           });

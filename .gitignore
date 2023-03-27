@@ -21,3 +21,10 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+SupplyChain/build/contracts/Client.json
+SupplyChain/build/contracts/Distributor.json
+SupplyChain/build/contracts/Pharmacy.json
+SupplyChain/build/contracts/RoleManager.json
+SupplyChain/build/contracts/Manufacturer.json
+SupplyChain/build/contracts/Roles.json
+SupplyChain/build/contracts/SupplyChain.json
