@@ -29,6 +29,8 @@ contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
         address pharmacy;
         address distributor;
         OrderStatus Status;
+        address manufacturer;
+
     }
     constructor(){       
 
@@ -50,10 +52,10 @@ function getAllDrug() public view returns (Drug[] memory) {
     }
     return drugsAvailable;
 }
-function getAllOrders() public view returns (Order[] memory) {
+function getAllOrders(address ad) public view returns (Order[] memory) {
     Order[] memory OrdersAvailable = new Order[](orderNumber);
-    for (uint i = 0; i < orderNumber; i++) {    
-        if ((orders[i].Status == OrderStatus.Ordered)){
+    for (uint i = 0; i < orderNumber; i++ ) {    
+        if ((orders[i].Status == OrderStatus.Ordered)&&(orders[i].manufacturer==ad)){
         OrdersAvailable[i] = orders[i];}
     }
     return OrdersAvailable;
@@ -113,7 +115,8 @@ event OrderAdded(
             drugIndex : index,
             pharmacy : msg.sender,
             distributor: distributor,
-            Status : OrderStatus.Ordered
+            Status : OrderStatus.Ordered,
+            manufacturer : drugs[index].manufacturer
         });
         orders[orderNumber]= order;
         orderNumber++;

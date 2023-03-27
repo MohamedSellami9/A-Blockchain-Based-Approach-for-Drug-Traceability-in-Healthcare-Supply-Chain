@@ -283,7 +283,7 @@ export const getOrdersAvailable = async () => {
         await init();
     }
 
-    const OrdersAvailable = await supplyContract.methods.getAllOrders().call();
+    const OrdersAvailable = await supplyContract.methods.getAllOrders(selectedAccount).call();
     const OrdersAvailableObj = OrdersAvailable.map((order) => ({
         id: order.id,
         drugIndex: order.drugIndex,
