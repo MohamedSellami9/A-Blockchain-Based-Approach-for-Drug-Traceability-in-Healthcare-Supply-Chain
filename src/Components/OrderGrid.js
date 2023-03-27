@@ -23,8 +23,9 @@ function OrderGrid({}) {
           },
           onDecline: async (row) => {
             console.log("Declined order:", row);
+            const accept = await Decline(row.id);
             console.log(console.log(row.id));
-            console.log(orderStatus(row.id));
+            gridRef.current.api.applyTransaction({ remove: [row] });
           },
         },
       },
