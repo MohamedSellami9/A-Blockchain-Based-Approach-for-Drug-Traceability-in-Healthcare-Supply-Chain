@@ -16,6 +16,7 @@ const Sidebar = (props) => {
             
             
             <Nav.Link  as={Link} to="/create">Create Drug</Nav.Link>
+            <Nav.Link  as={Link} to="/ordergrid">Orders Grid</Nav.Link>
             <Nav.Link  as={Link} to="/order">Order Drug</Nav.Link>
             <Nav.Link  as={Link} to="/roles">Roles</Nav.Link>
           </Nav>

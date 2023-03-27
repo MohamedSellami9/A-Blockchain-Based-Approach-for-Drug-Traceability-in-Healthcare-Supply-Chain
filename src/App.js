@@ -7,6 +7,7 @@ import Register from './Components/Register';
 import Home from './Components/Home';
 import CreateDrugForm from './Components/CreateDrugForm';
 import OrderDrug from './Components/OrderDrug';
+import OrderGrid from './Components/OrderGrid';
 import TokenMinted from './Components/TokenMinted';
 import Roles from './Components/Roles';
 import {signOut} from "firebase/auth";
@@ -113,6 +114,7 @@ const handlePriceChange = (event) => {
             path="/order"
             element={<OrderDrug />}
           />
+			<Route path="/ordergrid"  element={<OrderGrid/>} />
           <Route path="/roles"  element={<Roles deployClientContract={deployClientContract} Adress={Adress} handleAdressChange={handleAdressChange} isClient={isClient} deployManufacturerContract={deployManufacturerContract}
            isManu={isManu} deployPh={deployPh} isPharm={isPharm} Getdrug ={Getdrug} /> } />
           <Route path="/login"  element={<Login/>} />

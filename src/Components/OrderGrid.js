@@ -3,8 +3,8 @@ import { AgGridReact } from 'ag-grid-react';
 import Button from 'react-bootstrap/Button';
 import { getOrdersAvailable } from '../Web3Client';
 
-function CreateDrugForm({ name, description, price, handleNameChange, handleDescriptionChange, handlePriceChange, handleMintToken, selectedDrug }) {
-  const [gridOptions, setGridOptions] = useState({
+function OrderGrid({}) {
+const [gridOptions, setGridOptions] = useState({
     columnDefs: [
       { headerName: "ID", field: "id", sortable: true, filter: true },
       { headerName: "Drug Index", field: "drugIndex", sortable: true, filter: true },
@@ -32,11 +32,6 @@ function CreateDrugForm({ name, description, price, handleNameChange, handleDesc
     }
     fetchOrders();
   }, []);
-
-  const handleMintTokenWithGrid = () => {
-    handleMintToken();
-  };
-
   const rowData = ordersAvailable?.map(order => ({
     id: order.id,
     drugIndex: order.drugIndex,
@@ -49,32 +44,15 @@ function CreateDrugForm({ name, description, price, handleNameChange, handleDesc
     gridRef.current = params;
     params.api.sizeColumnsToFit();
   }, []);
-
-
   return (
-    <div>
-      <form>
-        <label>
-          Name:
-          <input type="text" value={name} onChange={handleNameChange} />
-        </label>
-        <br />
-        <label>
-          Description:
-          <input type="text" value={description} onChange={handleDescriptionChange} />
-        </label>
-        <br />
-        <label>
-          Price:
-          <input type="text" value={price} onChange={handlePriceChange} />
-        </label>
-        <br />
-        <Button variant='dark' onClick={handleMintTokenWithGrid}>Create Drug</Button>
-      </form>
-      <br />
-    </div>
+    <div className="ag-theme-alpine" style={{ height: 300, width: '100%' }}>
+    <AgGridReact
+      columnDefs={gridOptions.columnDefs}
+      rowData={rowData}
+      onGridReady={onGridReady}
+    />
+  </div>
   );
 }
 
-export default CreateDrugForm;
-
+export default OrderGrid;
