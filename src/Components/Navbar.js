@@ -14,11 +14,15 @@ const Sidebar = (props) => {
             <>
           <Nav className="me-auto">
             
-            
+            {((props.role=="manufacturer")||(props.role=="admin"))&&<>
             <Nav.Link  as={Link} to="/create">Create Drug</Nav.Link>
-            <Nav.Link  as={Link} to="/ordergrid">Orders Grid</Nav.Link>
-            <Nav.Link  as={Link} to="/order">Order Drug</Nav.Link>
-            <Nav.Link  as={Link} to="/roles">Roles</Nav.Link>
+            <Nav.Link  as={Link} to="/ordergrid">Orders Grid</Nav.Link></>}
+            {((props.role=="pharmacy")||(props.role=="admin"))&&
+            <Nav.Link  as={Link} to="/order">Order Drug</Nav.Link>}
+            {(props.role=="admin")&&<>
+            
+            <Nav.Link  as={Link} to="/roles">Roles</Nav.Link></>}
+            <Nav.Link  as={Link} to="/admin">Edit Users Roles</Nav.Link>
           </Nav>
           <Nav className="ms-auto">
           <Nav.Link onClick={props.logout}>Logout</Nav.Link>

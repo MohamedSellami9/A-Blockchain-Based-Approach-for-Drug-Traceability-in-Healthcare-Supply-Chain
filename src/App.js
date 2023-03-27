@@ -21,9 +21,10 @@ import {
 	getDoc,
 	doc
   } from "firebase/firestore";
-
+  import Rolegrid from './Components/Rolegrid';
 
 function App() {
+	
   const [user, setUser] = useState();
   const [role, setrole] = useState();
   console.log(role);
@@ -121,7 +122,7 @@ const handlePriceChange = (event) => {
     <div className="App">
       
 	  
-        <Sidebar auth={auth} logout={handleLogout}/>
+        <Sidebar role={role} auth={auth} logout={handleLogout}/>
         <Routes>
           <Route path="/" >
 
@@ -133,6 +134,7 @@ const handlePriceChange = (event) => {
 		  <Route path="unauthorized" element={<Unauthorized />} />
 		  <Route path="roles"  element={<Roles deployClientContract={deployClientContract} Adress={Adress} handleAdressChange={handleAdressChange} isClient={isClient} deployManufacturerContract={deployManufacturerContract}
            isManu={isManu} deployPh={deployPh} isPharm={isPharm} Getdrug ={Getdrug} /> } />
+		   <Route path="admin" element={<Rolegrid user={user} setrole={setrole}/>} />
           
 		   {/* ONLY MANUFACTURER */}
 		   <Route element={<RequireAuth role={role} allowedRoles={["admin", "manufacturer"]} />}>

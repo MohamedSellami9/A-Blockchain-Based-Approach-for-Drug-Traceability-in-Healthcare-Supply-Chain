@@ -52,7 +52,8 @@ function Register(props) {
         setDoc(docRef, {
           useruid : auth.currentUser.uid,
           wallet : selectedAccount,
-          role:formdata.role
+          role:formdata.role,
+          email:formdata.email
         }).then(() => {
             navigate('/');
         })
@@ -82,6 +83,7 @@ function Register(props) {
         <label>
           Choose role:
           <select name='role' value={formdata.role} onChange={handleChange}>
+          <option value="admin">admin</option>
           <option value="client">client</option>
             <option value="manufacturer">manufacturer</option>
             <option value="pharmacy">pharmacy</option>

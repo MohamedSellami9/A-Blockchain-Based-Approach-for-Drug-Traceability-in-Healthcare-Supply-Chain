@@ -11,6 +11,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "ag-grid-community": "^29.2.0",
+    "ag-grid-enterprise": "^29.2.0",
     "ag-grid-react": "^29.2.0",
     "bootstrap": "^5.2.3",
     "contracts": "file:./SupplyChain/build/contracts",
