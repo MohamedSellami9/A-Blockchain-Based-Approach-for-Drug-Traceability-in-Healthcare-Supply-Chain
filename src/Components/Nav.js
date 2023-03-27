@@ -19,6 +19,9 @@ const MainNav = (props) => {
             <LinkContainer to="/create">
               <Nav.Item>Create Drug</Nav.Item>
               </LinkContainer>
+              <LinkContainer to="/ordergrid">
+              <Nav.Item>Order Grid</Nav.Item>
+              </LinkContainer>
               <LinkContainer to="/order">
               <Nav.Item>Order Drug</Nav.Item>
               </LinkContainer>
