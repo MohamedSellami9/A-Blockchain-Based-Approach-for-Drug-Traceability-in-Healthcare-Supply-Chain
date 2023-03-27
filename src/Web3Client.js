@@ -202,15 +202,40 @@ export const order = async (id) => {
   };
   
 
-export const accept = async () => {
+  export const Accept = async (id) => {
 	if (!isInitialized) {
 		await init();
 	}
 
-   return supplyContract.methods
-	   .AcceptOrder(0)
-		.call();
+   const result = await supplyContract.methods
+	   .AcceptOrder(id)
+		.send({ from: selectedAccount });
+	return result;
 };
+export const orderStatus = async (id) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   const result = await supplyContract.methods
+	   .getOrderStatus(id)
+		.call();
+	return result;
+};
+export const Decline = async (id) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   const result = await supplyContract.methods
+	   .DeclineOrder(id)
+		.send({ from: selectedAccount });
+	return result;
+};
+
+
+
+
 export const DrugNum = async () => {
 	if (!isInitialized) {
 		await init();
@@ -302,3 +327,20 @@ export function subscribeToOrderAdded(callback) {
 	  }));
     return orderssAvailableObj;
 };
+export function subscribeToAcceptOrder(callback) {
+	if (supplyContract) {
+	  supplyContract.events.OrderAccepted()
+		.on('data', callback)
+		.on('error', console.error);
+	}
+  }
+  export const accept = async (id) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   return supplyContract.methods
+	   .getAccepted(id)
+		.call();
+};
+

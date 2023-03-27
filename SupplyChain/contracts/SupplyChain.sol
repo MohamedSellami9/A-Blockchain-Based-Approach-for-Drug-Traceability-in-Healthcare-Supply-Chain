@@ -53,7 +53,7 @@ function getAllDrug() public view returns (Drug[] memory) {
 function getAllOrders() public view returns (Order[] memory) {
     Order[] memory OrdersAvailable = new Order[](orderNumber);
     for (uint i = 0; i < orderNumber; i++) {    
-        if ((drugs[i].Status == Status.Ordered)){
+        if ((orders[i].Status == OrderStatus.Ordered)){
         OrdersAvailable[i] = orders[i];}
     }
     return OrdersAvailable;
@@ -66,6 +66,7 @@ function getAllOrders() public view returns (Order[] memory) {
         require(orders[_index].Status == OrderStatus.Accepted);
     _;
     }
+    
     modifier AcceptCond(uint _Index){
         require(orders[_Index].Status == OrderStatus.Ordered);
         _;
@@ -82,7 +83,7 @@ function getAllOrders() public view returns (Order[] memory) {
     }
 event DrugAdded(uint indexed id, string name, string description, address indexed manufacturer, int price);
 
-function drugCreate(string memory name1, string memory description1, int price) public payable onlyManufacturer nameDrug(name1, description1) returns (Drug memory) {
+function drugCreate(string memory name1, string memory description1, int price) public payable nameDrug(name1, description1) returns (Drug memory) {
     require(msg.value <= 0.01 ether, "Payment amount is insufficient.");
     Drug memory drug = Drug({
         id : drugsNumber ,
@@ -106,7 +107,7 @@ event OrderAdded(
   address pharmacy,
   address distributor);
 
-    function orderDrug(uint index , address distributor ) public onlyPharmacie  returns(Order memory) {
+    function orderDrug(uint index , address distributor ) public  returns(Order memory) {
         Order memory order = Order({
             id : orderNumber ,
             drugIndex : index,
@@ -120,28 +121,30 @@ event OrderAdded(
         emit OrderAdded(order.id, order.drugIndex, order.pharmacy, order.distributor);
         return order;
     }
-    function priceChanger(uint index , int price) public onlyPharmacie {
+    function priceChanger(uint index , int price) public {
         drugs[index].price = price;
     }
-    function AcceptOrder(uint orderIndex) public onlyManufacturer AcceptCond(orderIndex) {
+    event OrderAccepted(uint id);
+    function AcceptOrder(uint orderIndex) public AcceptCond(orderIndex) {
         orders[orderIndex].Status = OrderStatus.Accepted;
+        emit OrderAccepted(orderIndex);
     }
-    function DeclineOrder(uint orderIndex) public onlyManufacturer AcceptCond(orderIndex) {
+    function DeclineOrder(uint orderIndex) public AcceptCond(orderIndex) {
     orders[orderIndex].Status = OrderStatus.Declined;
     }
-    function startDeliverdrug(uint orderIndex) public onlyDistributor DeliveringCond(orderIndex) {
+    function startDeliverdrug(uint orderIndex) public DeliveringCond(orderIndex) {
         uint index = orders[orderIndex].drugIndex;
         drugs[index].Status = Status.Delivering;
         drugs[index].ownerID = orders[orderIndex].distributor;
 
     }
-    function endDelivering(uint orderIndex) public onlyDistributor {
+    function endDelivering(uint orderIndex) public {
         uint index = orders[orderIndex].drugIndex;
         orders[orderIndex].Status = OrderStatus.Completed;
         drugs[index].Status = Status.Delivered;
         drugs[index].ownerID = orders[orderIndex].pharmacy;
     }
-    function buyDrug(uint index) public onlyClient {
+    function buyDrug(uint index) public {
         drugs[index].Status = Status.Sold;
         drugs[index].ownerID = msg.sender;
     }
