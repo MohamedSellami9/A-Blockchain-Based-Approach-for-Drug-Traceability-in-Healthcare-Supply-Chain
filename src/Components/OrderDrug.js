@@ -78,7 +78,7 @@ function OrderDrug({ orderr, acceptt, orderd }) {
     for (let id in selectedIds){
       console.log(selectedRows[id].quantity);
       console.log(quantity);
-      if (parseInt(quantity)<selectedRows[id].quantity){
+      if (parseInt(quantity)<=selectedRows[id].quantity){
       let ord = await order(selectedRows[id].id, quantity);
       let drugIndex = ord.drugIndex;
       gridRef.current.api.applyTransaction({ remove: selectedRows });
