@@ -8,11 +8,10 @@ import Home from './Components/Home';
 import CreateDrugForm from './Components/CreateDrugForm';
 import OrderDrug from './Components/OrderDrug';
 import OrderGrid from './Components/OrderGrid';
-import TokenMinted from './Components/TokenMinted';
 import Roles from './Components/Roles';
 import {signOut} from "firebase/auth";
 import { auth,db } from "./firebase-config";
-import { mintToken , order,accept ,deployClientContract,isClient,deployManufacturerContract,isManu,deployPh,isPharm,DrugNum} from './Web3Client';
+import { createDrug , order,accept ,deployClientContract,isClient,deployManufacturerContract,isManu,deployPh,isPharm,DrugNum} from './Web3Client';
 import { init } from './Web3Client';
 import Unauthorized from "./Components/Unauthorized";
 import Notfound from "./Components/Notfound";
@@ -22,6 +21,7 @@ import {
 	doc
   } from "firebase/firestore";
   import Rolegrid from './Components/Rolegrid';
+  import Deleverygrid from './Components/Deleverygrid';
 
 function App() {
 	
@@ -51,37 +51,22 @@ function App() {
 	navigate('/');
 
     };
-  const [minted, setMinted] = useState(false);
 	const [orderd, setOrder] = useState(false);
-	const [name, setName] = useState('');
-	const [description, setDescription] = useState('');
-	const [price, setPrice] = useState('');
+	
 	const [orderNum, setOrderNum] = useState('');
 	const [Adress, setAd] = useState('');
-const handleNameChange = (event) => {
-    event.preventDefault();
-    setName(event.target.value);
-};
 
-const handleDescriptionChange = (event) => {
-    event.preventDefault();
-    setDescription(event.target.value);
-};
-
-const handlePriceChange = (event) => {
-    event.preventDefault();
-    setPrice(event.target.value);
-};
   const handleAdressChange = (event) => {
     event.preventDefault();
       setAd(event.target.value);
       };
-	  const handleMintToken = async () => {
-		const drug = await mintToken(name, description,price);
-		console.log('Minted drug:', drug);
-	  };
-	 const mint = () => {
-	 	mintToken()
+
+
+
+
+
+	 const create = () => {
+		createDrug()
 	 		.then((tx) => {
 	 			console.log(tx);
 	 		})
@@ -135,13 +120,13 @@ const handlePriceChange = (event) => {
 		  <Route path="roles"  element={<Roles deployClientContract={deployClientContract} Adress={Adress} handleAdressChange={handleAdressChange} isClient={isClient} deployManufacturerContract={deployManufacturerContract}
            isManu={isManu} deployPh={deployPh} isPharm={isPharm} Getdrug ={Getdrug} /> } />
 		   <Route path="admin" element={<Rolegrid user={user} setrole={setrole}/>} />
-          
+		   <Route path="delevery" element={<Deleverygrid/>} />
+		   
 		   {/* ONLY MANUFACTURER */}
 		   <Route element={<RequireAuth role={role} allowedRoles={["admin", "manufacturer"]} />}>
 		  <Route
             path="create"
-            element={<CreateDrugForm name={name} description = {description} price={price} handleNameChange={handleNameChange}
-            handleDescriptionChange={handleDescriptionChange} handlePriceChange={handlePriceChange} handleMintToken={handleMintToken} />}
+            element={<CreateDrugForm/>}
           />
 			<Route path="ordergrid"  element={<OrderGrid/>} />
 			</Route>

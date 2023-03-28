@@ -60,6 +60,17 @@ function getAllOrders(address ad) public view returns (Order[] memory) {
     }
     return OrdersAvailable;
 }
+function getAllOrdersAccepted(address ad) public view returns (Order[] memory) {
+    Order[] memory OrdersAvailable = new Order[](orderNumber);
+    for (uint i = 0; i < orderNumber; i++ ) {    
+        if ((orders[i].Status == OrderStatus.Accepted)&&(orders[i].distributor==ad)){
+        OrdersAvailable[i] = orders[i];}
+    }
+    return OrdersAvailable;
+}
+
+
+
     modifier orderCond(uint _index){
         require(drugs[_index].manufacturer != msg.sender ,"erroooooooooooor");
     _;
@@ -151,6 +162,7 @@ event OrderAdded(
         drugs[index].Status = Status.Sold;
         drugs[index].ownerID = msg.sender;
     }
+    
     
 
 }

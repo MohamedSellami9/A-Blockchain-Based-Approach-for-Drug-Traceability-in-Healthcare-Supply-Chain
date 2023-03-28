@@ -166,7 +166,7 @@ export const deployPh = async () => {
 
 // 	return rolesInstance.methods.isClient(selectedAccount).call();
 // };
-export const mintToken = async (name, description, price) => {
+export const createDrug = async (name, description, price) => {
 	await init();
     const createTx = await supplyContract.methods
         .drugCreate(name,description,price)
@@ -327,6 +327,24 @@ export function subscribeToOrderAdded(callback) {
 	  }));
     return orderssAvailableObj;
 };
+
+
+export const getAllOrdersAccepted = async () => {
+    if (!isInitialized) {
+        await init();
+    }
+
+    const ordersAvailable = await supplyContract.methods.getAllOrdersAccepted().call();
+    const orderssAvailableObj = ordersAvailable.map((order) => ({
+		id: order.id ,
+		drugIndex:order.drugIndex,
+		pharmacy:order.pharmacy,
+		distributor:order.distributor,
+		Status:order.Status
+	  }));
+    return orderssAvailableObj;
+};
+
 export function subscribeToAcceptOrder(callback) {
 	if (supplyContract) {
 	  supplyContract.events.OrderAccepted()
