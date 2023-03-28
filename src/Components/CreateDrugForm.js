@@ -6,7 +6,7 @@ import { createDrug } from '../Web3Client'
 function CreateDrugForm() {
   const [formdata, setformdata] = useState({name:'',
   description:'',
-  price:null})
+  price:null,quantity:null,tempC:null,text:''})
   const [showMessage, setShowMessage] = useState(false)
   function handleChange(event){
     setformdata(old => {
@@ -17,7 +17,9 @@ function CreateDrugForm() {
     })
 }
 const handlecreateDrug = async () => {
-  const drug = await createDrug(formdata.name, formdata.description,formdata.price);
+  const d = new Date();
+  let text = d.toString();
+  const drug = await createDrug(formdata.name, formdata.description,formdata.price,formdata.tempC,formdata.quantity,text);
   setShowMessage(true);
   setTimeout(() => setShowMessage(false), 6000);
   console.log('created drug:', drug);
@@ -36,8 +38,18 @@ const handlecreateDrug = async () => {
         </label>
         <br />
         <label>
-          Price:
+          Price/U:
           <input type="number" name='price' value={formdata.price} onChange={handleChange} />
+        </label>
+        <br />
+        <label>
+          Quantity:
+          <input type="number" name='quantity' value={formdata.quantity} onChange={handleChange} />
+        </label>
+        <br />
+        <label>
+        Conservation temperature:
+          <input type="number" name='tempC' value={formdata.tempC} onChange={handleChange} />
         </label>
         <br />
         <Button variant='dark' onClick={handlecreateDrug}>Create Drug</Button>

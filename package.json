@@ -13,6 +13,7 @@
     "ag-grid-react": "^29.2.0",
     "bootstrap": "^5.2.3",
     "contracts": "file:./SupplyChain/build/contracts",
+    "date": "^2.0.2",
     "firebase": "^9.17.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.2",

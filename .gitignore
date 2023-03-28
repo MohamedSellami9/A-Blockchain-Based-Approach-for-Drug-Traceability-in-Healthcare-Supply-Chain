@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+
 /.pnp
 .pnp.js
 
@@ -28,3 +29,4 @@ SupplyChain/build/contracts/RoleManager.json
 SupplyChain/build/contracts/Manufacturer.json
 SupplyChain/build/contracts/Roles.json
 SupplyChain/build/contracts/SupplyChain.json
+SupplyChain/node_modules

@@ -7,6 +7,7 @@ function OrderGrid({}) {
   const [gridOptions, setGridOptions] = useState({
     columnDefs: [
       { headerName: "ID", field: "id", sortable: true, filter: true },
+      { headerName: "Quantity", field: "quantity", sortable: true, filter: true },
       { headerName: "Drug Index", field: "drugIndex", sortable: true, filter: true },
       { headerName: "Pharmacy", field: "pharmacy", sortable: true, filter: true },
       { headerName: "Distributor", field: "distributor", sortable: true, filter: true },
@@ -45,7 +46,9 @@ function OrderGrid({}) {
         drugIndex: order.drugIndex,
         pharmacy: order.pharmacy,
         distributor: order.distributor,
-        status: order.Status
+        status: order.Status,
+        quantity:order.quantity
+
       }));
       setGridOptions({ ...gridOptions, rowData: data });
     }
@@ -61,7 +64,8 @@ function OrderGrid({}) {
     drugIndex: order.drugIndex,
     pharmacy: order.pharmacy,
     distributor: order.distributor,
-    status: order.Status
+    status: order.Status,
+    quantity:order.quantity,
   }));
 
   const onGridReady = useCallback(params => {

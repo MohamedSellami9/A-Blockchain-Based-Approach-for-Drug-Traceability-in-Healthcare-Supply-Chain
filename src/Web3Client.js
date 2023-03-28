@@ -166,10 +166,10 @@ export const deployPh = async () => {
 
 // 	return rolesInstance.methods.isClient(selectedAccount).call();
 // };
-export const createDrug = async (name, description, price) => {
+export const createDrug = async (name, description, price,tempc,quantity,date) => {
 	await init();
     const createTx = await supplyContract.methods
-        .drugCreate(name,description,price)
+        .drugCreate(name,description,price,tempc,quantity,date)
         .send({
             from: selectedAccount,
             gas: '5000000',
@@ -189,15 +189,14 @@ export const createDrug = async (name, description, price) => {
 //     return  instance.isClient(selectedAccount).call();
 
 //   };
-export const order = async (id) => {
+export const order = async (id,quantity) => {
 	if (!isInitialized) {
 	  await init();
 	}
   
 	const result = await supplyContract.methods
-	  .orderDrug(id, selectedAccount)
+	  .orderDrug(id,quantity)
 	  .send({ from: selectedAccount });
-  
 	return result;
   };
   export const assign = async (wallet) => {
@@ -267,7 +266,11 @@ export const getDrugsAvailable = async () => {
         name: drug.name,
         description: drug.description,
         price: drug.price ,
-		manufacturer: drug.manufacturer 
+		manufacturer: drug.manufacturer ,
+		tempC : drug.tempC,
+		quantity : drug.quantity,
+		date: drug.date
+
 	  }));
     return drugsAvailableObj;
 };
@@ -299,6 +302,8 @@ export const getOrdersAvailable = async () => {
         id: order.id,
         drugIndex: order.drugIndex,
         pharmacy: order.pharmacy,
+		quantity:order.quantity
+		
 
 	  }));
     return OrdersAvailableObj;
@@ -334,7 +339,8 @@ export function subscribeToOrderAdded(callback) {
 		drugIndex:order.drugIndex,
 		pharmacy:order.pharmacy,
 		distributor:order.distributor,
-		Status:order.Status
+		Status:order.Status,
+		quantity:order.quantity
 	  }));
     return orderssAvailableObj;
 };

@@ -24,6 +24,10 @@ contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
         address ownerID;
         int price;
         Status Status;
+        int tempC;
+        int quantity;
+        string date;
+
     }
     struct Order{
         uint id ;
@@ -32,6 +36,7 @@ contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
         address distributor;
         OrderStatus Status;
         address manufacturer;
+        int quantity;
 
     }
     constructor(){       
@@ -98,7 +103,7 @@ function getAllOrdersAccepted(address ad) public view returns (Order[] memory) {
     }
 event DrugAdded(uint indexed id, string name, string description, address indexed manufacturer, int price);
 
-function drugCreate(string memory name1, string memory description1, int price) public payable nameDrug(name1, description1) returns (Drug memory) {
+function drugCreate(string memory name1, string memory description1, int price , int tempC ,int quantity,string memory date) public payable nameDrug(name1, description1) returns (Drug memory) {
     require(msg.value <= 0.01 ether, "Payment amount is insufficient.");
     Drug memory drug = Drug({
         id : drugsNumber ,
@@ -107,7 +112,11 @@ function drugCreate(string memory name1, string memory description1, int price) 
         manufacturer : msg.sender,
         Status : Status.Created,
         price : price ,
-        ownerID : msg.sender
+        ownerID : msg.sender,
+        tempC : tempC,
+        quantity : quantity,
+        date : date
+        
     });
 
     drugs[drugsNumber]= drug;
@@ -122,14 +131,15 @@ event OrderAdded(
   address pharmacy,
   address distributor);
 
-    function orderDrug(uint index  ) public  returns(Order memory) {
+    function orderDrug(uint index , int quantity) public  returns(Order memory) {
         Order memory order = Order({
             id : orderNumber ,
             drugIndex : index,
             pharmacy : msg.sender,
             distributor: distributors[msg.sender],
             Status : OrderStatus.Ordered,
-            manufacturer : drugs[index].manufacturer
+            manufacturer : drugs[index].manufacturer,
+            quantity: quantity
         });
         orders[orderNumber]= order;
         orderNumber++;
@@ -142,7 +152,22 @@ event OrderAdded(
     }
     event OrderAccepted(uint id);
     function AcceptOrder(uint orderIndex) public AcceptCond(orderIndex) {
-        orders[orderIndex].Status = OrderStatus.Accepted;
+        int n = drugs[orders[orderIndex].drugIndex].quantity-orders[orderIndex].quantity;
+        if (n>0){
+            drugs[orders[orderIndex].drugIndex].quantity-=orders[orderIndex].quantity;
+            drugs[orders[orderIndex].drugIndex].Status=Status.Created;
+            orders[orderIndex].Status = OrderStatus.Accepted;
+            Drug memory drug2 =drugCreate(drugs[orders[orderIndex].drugIndex].name,drugs[orders[orderIndex].drugIndex].description,drugs[orders[orderIndex].drugIndex].price,drugs[orders[orderIndex].drugIndex].tempC,orders[orderIndex].quantity,drugs[orders[orderIndex].drugIndex].date);
+            drug2.manufacturer=drugs[orders[orderIndex].drugIndex].manufacturer;
+            drug2.Status=Status.Ordered;
+            drugs[drug2.id]=drug2;
+            Order memory order1 = orderDrug(drug2.id ,orders[orderIndex].quantity);
+            order1.Status=OrderStatus.Accepted;
+            orders[order1.id].Status=OrderStatus.Accepted;
+        }
+        else if(n==0){
+            orders[orderIndex].Status = OrderStatus.Accepted;
+        }
         emit OrderAccepted(orderIndex);
     }
     function DeclineOrder(uint orderIndex) public AcceptCond(orderIndex) {
