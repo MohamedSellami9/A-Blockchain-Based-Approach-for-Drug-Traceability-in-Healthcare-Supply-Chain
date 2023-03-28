@@ -22,7 +22,7 @@ import {
   } from "firebase/firestore";
   import Rolegrid from './Components/Rolegrid';
   import Deleverygrid from './Components/Deleverygrid';
-
+import AssignDistributor from './Components/assignDistributor';
 function App() {
 	
   const [user, setUser] = useState();
@@ -121,7 +121,8 @@ function App() {
            isManu={isManu} deployPh={deployPh} isPharm={isPharm} Getdrug ={Getdrug} /> } />
 		   <Route path="admin" element={<Rolegrid user={user} setrole={setrole}/>} />
 		   <Route path="delevery" element={<Deleverygrid/>} />
-		   
+		   <Route path="assign" element={<AssignDistributor/>} />
+
 		   {/* ONLY MANUFACTURER */}
 		   <Route element={<RequireAuth role={role} allowedRoles={["admin", "manufacturer"]} />}>
 		  <Route

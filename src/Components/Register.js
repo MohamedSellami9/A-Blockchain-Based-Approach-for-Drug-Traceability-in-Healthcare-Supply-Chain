@@ -84,6 +84,7 @@ function Register(props) {
           Choose role:
           <select name='role' value={formdata.role} onChange={handleChange}>
           <option value="admin">admin</option>
+          <option value="distributor">distributor</option>
           <option value="client">client</option>
             <option value="manufacturer">manufacturer</option>
             <option value="pharmacy">pharmacy</option>

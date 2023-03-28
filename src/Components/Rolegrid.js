@@ -18,7 +18,7 @@ export default function Rolegrid(props) {
           return {
             component: 'agRichSelectCellEditor',
             params: {
-              values: ['admin', "manufacturer","pharmacy","client"],
+              values: ['admin','distributor', "manufacturer","pharmacy","client"],
             },
             popup: true,
           };

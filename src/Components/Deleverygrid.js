@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import Button from 'react-bootstrap/Button';
-import { getAllOrdersAccepted, Accept , Decline ,orderStatus,subscribeToAcceptOrder} from '../Web3Client';
+import { getAllOrdersAccepted, dele , Decline ,orderStatus,subscribeToAcceptOrder} from '../Web3Client';
 
 function Deleverygrid({}) {
   const [gridOptions, setGridOptions] = useState({
@@ -17,7 +17,7 @@ function Deleverygrid({}) {
         cellRendererParams: {
           onAccept: async (row) => {
             console.log("delevering order:", row);
-            const accept = await Accept(row.id);
+            //const accept = await delevery(row.id);
             console.log(console.log(row.id));
             gridRef.current.api.applyTransaction({ remove: [row] });
           },

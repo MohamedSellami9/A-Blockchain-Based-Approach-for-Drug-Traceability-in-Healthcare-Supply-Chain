@@ -14,6 +14,8 @@ contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
 
     mapping(uint => Order) public orders; 
     uint public orderNumber=0;   
+    //aassocier chaque pharmacy a un distrubuter
+    mapping(address => address) public distributors; 
     struct Drug {
         uint id ;
         string name;
@@ -120,12 +122,12 @@ event OrderAdded(
   address pharmacy,
   address distributor);
 
-    function orderDrug(uint index , address distributor ) public  returns(Order memory) {
+    function orderDrug(uint index  ) public  returns(Order memory) {
         Order memory order = Order({
             id : orderNumber ,
             drugIndex : index,
             pharmacy : msg.sender,
-            distributor: distributor,
+            distributor: distributors[msg.sender],
             Status : OrderStatus.Ordered,
             manufacturer : drugs[index].manufacturer
         });
@@ -162,7 +164,20 @@ event OrderAdded(
         drugs[index].Status = Status.Sold;
         drugs[index].ownerID = msg.sender;
     }
+    event distributorAssigned();
+    function assignDistributor( address distributor) public {
+ 
+    // Set the distributor for the specified pharmacy
+    distributors[msg.sender] = distributor;
+    emit distributorAssigned();
+}
     
+    function verifyDistributorAssignment(address distributor) public view returns (bool) {
+    // Get the address of the pharmacy that is calling this function
+    address pharmacy = msg.sender;
     
+    // Check if the specified distributor is assigned to the calling pharmacy
+    return (distributors[pharmacy] == distributor);
+}
 
 }

@@ -200,6 +200,17 @@ export const order = async (id) => {
   
 	return result;
   };
+  export const assign = async (wallet) => {
+	if (!isInitialized) {
+	  await init();
+	}
+  
+	const result = await supplyContract.methods
+	  .assignDistributor(wallet)
+	  .send({ from: selectedAccount });
+  
+	return result;
+  };
   
 
   export const Accept = async (id) => {
@@ -362,3 +373,20 @@ export function subscribeToAcceptOrder(callback) {
 		.call();
 };
 
+
+export const verifyDist = async (adress) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   return supplyContract.methods
+	   .verifyDistributorAssignment(adress)
+		.call();
+};
+export function subscribeTodistributorAssigned(callback) {
+	if (supplyContract) {
+	  supplyContract.events.distributorAssigned()
+		.on('data', callback)
+		.on('error', console.error);
+	}
+  }
