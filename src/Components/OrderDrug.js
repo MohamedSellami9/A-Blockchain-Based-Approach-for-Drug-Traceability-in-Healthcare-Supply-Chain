@@ -73,14 +73,21 @@ function OrderDrug({ orderr, acceptt, orderd }) {
   const handleButtonClick = async () => {
     const selectedRows = gridRef.current.api.getSelectedRows();
     const selectedIds = selectedRows.map(row => row.id);
-    console.log(selectedIds);
-    console.log(quantity);
+    //console.log(selectedIds);
+    //console.log(quantity);
     for (let id in selectedIds){
+      console.log(selectedRows[id].quantity);
+      console.log(quantity);
+      if (parseInt(quantity)<selectedRows[id].quantity){
       let ord = await order(selectedRows[id].id, quantity);
       let drugIndex = ord.drugIndex;
-      console.log(drugIndex);
+      gridRef.current.api.applyTransaction({ remove: selectedRows });
+      }
+      else {
+        console.log("not enought");
+      }
     }
-    gridRef.current.api.applyTransaction({ remove: selectedRows });
+  
   }
   
   
@@ -102,9 +109,7 @@ function OrderDrug({ orderr, acceptt, orderd }) {
           onSelectionChanged={onSelectionChanged}
           onGridReady={onGridReady}
         />
-      </div>
-      <div>
-      <InputGroup className='mb-3'>
+              <InputGroup className='mb-3'>
           <Form.Control 
             type='string' 
             placeholder='Quantity' 
@@ -112,6 +117,10 @@ function OrderDrug({ orderr, acceptt, orderd }) {
             onChange={(e) => setQuantity(e.target.value)}
           />
         </InputGroup>
+      </div>
+      <br />
+      <div>
+
 
         <Button variant='dark' onClick={handleButtonClick}>Order Selected Drugs</Button>
       </div>

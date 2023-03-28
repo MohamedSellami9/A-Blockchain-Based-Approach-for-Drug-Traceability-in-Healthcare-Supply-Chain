@@ -168,6 +168,10 @@ event OrderAdded(
         else if(n==0){
             orders[orderIndex].Status = OrderStatus.Accepted;
         }
+        else {
+            drugs[orders[orderIndex].drugIndex].Status=Status.Created;
+            orders[orderIndex].Status = OrderStatus.Declined;
+        }
         emit OrderAccepted(orderIndex);
     }
     function DeclineOrder(uint orderIndex) public AcceptCond(orderIndex) {
