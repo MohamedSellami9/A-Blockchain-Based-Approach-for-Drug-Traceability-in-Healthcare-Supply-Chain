@@ -19,6 +19,9 @@ const Sidebar = (props) => {
             <Nav.Link  as={Link} to="/ordergrid">Orders Grid</Nav.Link></>}
             {((props.role=="pharmacy")||(props.role=="admin"))&&
             <Nav.Link  as={Link} to="/order">Order Drug</Nav.Link>}
+            {((props.role=="distributor")||(props.role=="admin"))&&<>
+            <Nav.Link  as={Link} to="/assign">Assign Orders To Delivery</Nav.Link>
+            <Nav.Link  as={Link} to="/delevery">Deliver Orders</Nav.Link></>}
             {(props.role=="admin")&&<>
             
             <Nav.Link  as={Link} to="/roles">Roles</Nav.Link></>}

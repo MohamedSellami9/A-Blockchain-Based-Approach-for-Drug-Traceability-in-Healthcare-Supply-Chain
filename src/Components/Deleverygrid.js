@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import Button from 'react-bootstrap/Button';
-import { getAllOrdersAccepted, dele , Decline ,orderStatus,subscribeToAcceptOrder} from '../Web3Client';
+import {  dele , Decline ,orderStatus,subscribeToAcceptOrder, getAllOrdersAcceptedassigned, getAllOrdersAcceptednotassigned, startDeliver, endDeliver, getStatus} from '../Web3Client';
 
 function Deleverygrid({}) {
   const [gridOptions, setGridOptions] = useState({
@@ -11,19 +11,20 @@ function Deleverygrid({}) {
       { headerName: "Pharmacy", field: "pharmacy", sortable: true, filter: true },
       { headerName: "Distributor", field: "distributor", sortable: true, filter: true },
       { headerName: "Status", field: "status", sortable: true, filter: true },
+      { headerName: "Drug Status", field: "drugStatus", sortable: true, filter: true },
       {
         headerName: "Actions",
         cellRenderer: "actionsRenderer",
         cellRendererParams: {
-          onAccept: async (row) => {
+          onStart: async (row) => {
             console.log("delevering order:", row);
-            //const accept = await delevery(row.id);
-            console.log(console.log(row.id));
-            gridRef.current.api.applyTransaction({ remove: [row] });
+            const accept = await startDeliver(row.id);
+       
+
           },
-          onDecline: async (row) => {
+          onEnd: async (row) => {
             console.log("delivered order:", row);
-            const accept = await Decline(row.id);
+            const accept = await endDeliver(row.id);
             console.log(console.log(row.id));
             gridRef.current.api.applyTransaction({ remove: [row] });
           },
@@ -35,17 +36,21 @@ function Deleverygrid({}) {
   const gridRef = useRef();
   const [ordersAvailable, setOrdersAvailable] = useState([]);
 
+
   useEffect(() => {
     const fetchOrders = async () => {
-      const orders = await getAllOrdersAccepted();
+      const orders = await getAllOrdersAcceptedassigned();
+      const statusArray = await getStatus();
+      console.log(statusArray)
       const filteredOrders = orders.filter(order => order.pharmacy != "0x0000000000000000000000000000000000000000");
       setOrdersAvailable(filteredOrders);
-      const data = orders.map(order => ({
+      const data = filteredOrders.map(order => ({
         id: order.id,
         drugIndex: order.drugIndex,
         pharmacy: order.pharmacy,
         distributor: order.distributor,
-        status: order.Status
+        status: order.Status,
+        drugStatus:statusArray[order.id]
       }));
       setGridOptions({ ...gridOptions, rowData: data });
     }
@@ -61,7 +66,8 @@ function Deleverygrid({}) {
     drugIndex: order.drugIndex,
     pharmacy: order.pharmacy,
     distributor: order.distributor,
-    status: order.Status
+    status: order.Status,
+    
   }));
 
   const onGridReady = useCallback(params => {
@@ -70,20 +76,21 @@ function Deleverygrid({}) {
   }, []);
 
   const actionsRenderer = useCallback((props) => {
+    console.log(props.data)
     return (
     <div style={{ marginBottom:'10px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-      <Button variant="success" size="sm" onClick={() => props.onAccept(props.data)}>start Delivering drug</Button>
-      <Button variant="danger" size="sm" onClick={() => props.onDecline(props.data)}>end Delivering</Button>
+      <Button variant="success" disabled={props.data.drugStatus==2} size="sm" onClick={() => {props.onStart(props.data);}}>start Delivering</Button>
+      <Button variant="success" disabled={props.data.drugStatus==1} size="sm" onClick={() => {props.onEnd(props.data);}}>end Delivering</Button>
     </div>
     );
   }, []);
 
   return (
     <div className="ag-theme-material"
-    style={{margin:'23%', marginTop:'10px',marginBottom:'10px' , height: '500px', width: '60%' }}>
+    style={{margin:'10%', marginTop:'1px',marginBottom:'10px' , height: '500px', width: '80%' }}>
       <AgGridReact
         columnDefs={gridOptions.columnDefs}
-        rowData={rowData}
+        rowData={gridOptions.rowData}
         onGridReady={onGridReady}
         frameworkComponents={{ actionsRenderer }}
       />

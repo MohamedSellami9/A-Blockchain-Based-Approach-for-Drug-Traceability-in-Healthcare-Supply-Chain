@@ -14,8 +14,7 @@ contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
 
     mapping(uint => Order) public orders; 
     uint public orderNumber=0;   
-    //aassocier chaque pharmacy a un distrubuter
-    mapping(address => address) public distributors; 
+ 
     struct Drug {
         uint id ;
         string name;
@@ -53,27 +52,44 @@ function getOrder (uint id)public view returns(Order memory){
 }
 function getAllDrug() public view returns (Drug[] memory) {
     Drug[] memory drugsAvailable = new Drug[](drugsNumber);
+    uint j=0;
     for (uint i = 0; i < drugsNumber; i++) {    
         if ((drugs[i].Status == Status.Created)&&(drugs[i].price != 0)){
-        drugsAvailable[i] = drugs[i];}
+        drugsAvailable[j] = drugs[i];
+         j++;}
     }
     return drugsAvailable;
 }
 function getAllOrders(address ad) public view returns (Order[] memory) {
     Order[] memory OrdersAvailable = new Order[](orderNumber);
+    uint j=0;
     for (uint i = 0; i < orderNumber; i++ ) {    
         if ((orders[i].Status == OrderStatus.Ordered)&&(orders[i].manufacturer==ad)){
-        OrdersAvailable[i] = orders[i];}
+        OrdersAvailable[j] = orders[i];
+        j++;}
     }
     return OrdersAvailable;
 }
+
 function getAllOrdersAccepted(address ad) public view returns (Order[] memory) {
     Order[] memory OrdersAvailable = new Order[](orderNumber);
+    uint j=0;
     for (uint i = 0; i < orderNumber; i++ ) {    
         if ((orders[i].Status == OrderStatus.Accepted)&&(orders[i].distributor==ad)){
-        OrdersAvailable[i] = orders[i];}
+        OrdersAvailable[j] = orders[i];
+         j++;}
     }
     return OrdersAvailable;
+}
+function getAllStatus() public view returns (Status[] memory) {
+    Status[] memory status = new Status[](orderNumber);
+   
+    for (uint i = 0; i < orderNumber; i++ ) {    
+        
+        status[orders[i].id] = drugs[orders[i].id].Status;
+        
+    }
+    return status;
 }
 
 
@@ -136,7 +152,7 @@ event OrderAdded(
             id : orderNumber ,
             drugIndex : index,
             pharmacy : msg.sender,
-            distributor: distributors[msg.sender],
+            distributor: 0x0000000000000000000000000000000000000000,
             Status : OrderStatus.Ordered,
             manufacturer : drugs[index].manufacturer,
             quantity: quantity
@@ -193,20 +209,10 @@ event OrderAdded(
         drugs[index].Status = Status.Sold;
         drugs[index].ownerID = msg.sender;
     }
-    event distributorAssigned();
-    function assignDistributor( address distributor) public {
- 
-    // Set the distributor for the specified pharmacy
-    distributors[msg.sender] = distributor;
-    emit distributorAssigned();
-}
-    
-    function verifyDistributorAssignment(address distributor) public view returns (bool) {
-    // Get the address of the pharmacy that is calling this function
-    address pharmacy = msg.sender;
-    
-    // Check if the specified distributor is assigned to the calling pharmacy
-    return (distributors[pharmacy] == distributor);
+
+function setDistributor(uint orderId) public  {
+    require(orders[orderId].Status == OrderStatus.Accepted, "Order has not been placed yet");
+    orders[orderId].distributor = msg.sender;
 }
 
 }

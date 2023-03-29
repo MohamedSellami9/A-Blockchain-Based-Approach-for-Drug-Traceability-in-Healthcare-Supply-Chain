@@ -199,18 +199,39 @@ export const order = async (id,quantity) => {
 	  .send({ from: selectedAccount });
 	return result;
   };
-  export const assign = async (wallet) => {
+  export const assignDistributor = async (id) => {
 	if (!isInitialized) {
 	  await init();
 	}
   
 	const result = await supplyContract.methods
-	  .assignDistributor(wallet)
+	  .setDistributor(id)
 	  .send({ from: selectedAccount });
   
 	return result;
   };
+  export const startDeliver = async (id) => {
+	if (!isInitialized) {
+	  await init();
+	}
   
+	const result = await supplyContract.methods
+	  .startDeliverdrug(id)
+	  .send({ from: selectedAccount });
+  
+	return result;
+  };
+  export const endDeliver = async (id) => {
+	if (!isInitialized) {
+	  await init();
+	}
+  
+	const result = await supplyContract.methods
+	  .endDelivering(id)
+	  .send({ from: selectedAccount });
+  
+	return result;
+  };
 
   export const Accept = async (id) => {
 	if (!isInitialized) {
@@ -333,7 +354,7 @@ export function subscribeToOrderAdded(callback) {
         await init();
     }
 
-    const ordersAvailable = await supplyContract.methods.getAllOrdersOrdred().call();
+    const ordersAvailable = await supplyContract.methods.getAllOrdersOrdred(selectedAccount).call();
     const orderssAvailableObj = ordersAvailable.map((order) => ({
 		id: order.id ,
 		drugIndex:order.drugIndex,
@@ -346,12 +367,35 @@ export function subscribeToOrderAdded(callback) {
 };
 
 
-export const getAllOrdersAccepted = async () => {
+export const getAllOrdersAcceptednotassigned = async () => {
     if (!isInitialized) {
         await init();
     }
 
-    const ordersAvailable = await supplyContract.methods.getAllOrdersAccepted().call();
+    const ordersAvailable = await supplyContract.methods.getAllOrdersAccepted("0x0000000000000000000000000000000000000000").call();
+    const orderssAvailableObj = ordersAvailable.map((order) => ({
+		id: order.id ,
+		drugIndex:order.drugIndex,
+		pharmacy:order.pharmacy,
+		distributor:order.distributor,
+		manufacturer:order.manufacturer
+	  }));
+    return orderssAvailableObj;
+};
+export const getStatus = async () => {
+    if (!isInitialized) {
+        await init();
+    }
+
+    const ordersAvailable = await supplyContract.methods.getAllStatus().call();
+    return ordersAvailable;
+};
+export const getAllOrdersAcceptedassigned = async () => {
+    if (!isInitialized) {
+        await init();
+    }
+
+    const ordersAvailable = await supplyContract.methods.getAllOrdersAccepted(selectedAccount).call();
     const orderssAvailableObj = ordersAvailable.map((order) => ({
 		id: order.id ,
 		drugIndex:order.drugIndex,
@@ -361,7 +405,6 @@ export const getAllOrdersAccepted = async () => {
 	  }));
     return orderssAvailableObj;
 };
-
 export function subscribeToAcceptOrder(callback) {
 	if (supplyContract) {
 	  supplyContract.events.OrderAccepted()
@@ -380,19 +423,6 @@ export function subscribeToAcceptOrder(callback) {
 };
 
 
-export const verifyDist = async (adress) => {
-	if (!isInitialized) {
-		await init();
-	}
 
-   return supplyContract.methods
-	   .verifyDistributorAssignment(adress)
-		.call();
-};
-export function subscribeTodistributorAssigned(callback) {
-	if (supplyContract) {
-	  supplyContract.events.distributorAssigned()
-		.on('data', callback)
-		.on('error', console.error);
-	}
-  }
+
+ 
