@@ -194,6 +194,7 @@ event OrderAdded(
     orders[orderIndex].Status = OrderStatus.Declined;
     }
     function startDeliverdrug(uint orderIndex) public DeliveringCond(orderIndex) {
+        orders[orderIndex].distributor = msg.sender;
         uint index = orders[orderIndex].drugIndex;
         drugs[index].Status = Status.Delivering;
         drugs[index].ownerID = orders[orderIndex].distributor;
