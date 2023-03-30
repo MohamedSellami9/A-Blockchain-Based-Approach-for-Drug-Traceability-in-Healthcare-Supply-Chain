@@ -17,6 +17,7 @@ function AssignDistributor({}) {
           onAssign: async (row) => {
             console.log("assign:", row);
             const accept = await assignDistributor(row.id);
+            const d = await startDeliver(row.id)
             console.log(console.log(row.id));
             gridRef.current.api.applyTransaction({ remove: [row] });
           },
