@@ -12,16 +12,19 @@ function Deleverygrid({}) {
       { headerName: "Distributor", field: "distributor", sortable: true, filter: true },
       { headerName: "Status", field: "status", sortable: true, filter: true },
       { headerName: "Drug Status", field: "drugStatus", sortable: true, filter: true },
+      { headerName: "refresh", field: "refresh", sortable: true, filter: true },
       {
         headerName: "Actions",
         cellRenderer: "actionsRenderer",
         cellRendererParams: {
-          onStart: async (row) => {
-            console.log("delevering order:", row);
-            const accept = await startDeliver(row.id);
-       
-
-          },
+          // onStart: async (row) => {
+          //   console.log("delevering order:", row);
+          //   const accept = await startDeliver(row.id).then(()=>{ gridRef.current.api.refreshCells()});
+          //   // setGridOptions(prevstate => {const table=prevstate.rowData;
+          //   //   table[row.id].refresh=!(table[row.id].refresh);
+          //   //   return({...gridOptions,rowData: table});
+          //   // })
+          // },
           onEnd: async (row) => {
             console.log("delivered order:", row);
             const accept = await endDeliver(row.id);
@@ -50,16 +53,13 @@ function Deleverygrid({}) {
         pharmacy: order.pharmacy,
         distributor: order.distributor,
         status: order.Status,
-        drugStatus:statusArray[order.id]
+        drugStatus:statusArray[order.id],
+        refresh:true
       }));
       setGridOptions({ ...gridOptions, rowData: data });
     }
     fetchOrders();
-    const unsubscribe = subscribeToAcceptOrder(() => {
-      fetchOrders();
-    });
-
-    return unsubscribe;
+  
   }, []);
   const rowData = ordersAvailable?.map(order => ({
     id: order.id,
@@ -79,8 +79,8 @@ function Deleverygrid({}) {
     console.log(props.data)
     return (
     <div style={{ marginBottom:'10px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-      <Button variant="success" disabled={props.data.drugStatus==2} size="sm" onClick={() => {props.onStart(props.data);}}>start Delivering</Button>
-      <Button variant="success" disabled={props.data.drugStatus==1} size="sm" onClick={() => {props.onEnd(props.data);}}>end Delivering</Button>
+      {/* <Button variant="success" disabled={props.data.drugStatus==2} size="sm" onClick={() => {props.onStart(props.data);}}>start Delivering</Button> */}
+      <Button variant="success"  size="sm" onClick={() => {props.onEnd(props.data);}}>end Delivering</Button>
     </div>
     );
   }, []);

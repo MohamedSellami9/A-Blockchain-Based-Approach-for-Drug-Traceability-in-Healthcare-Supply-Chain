@@ -111,7 +111,7 @@ function OrderDrug({ orderr, acceptt, orderd }) {
         />
               <InputGroup className='mb-3'>
           <Form.Control 
-            type='string' 
+            type='number' 
             placeholder='Quantity' 
             value={quantity} 
             onChange={(e) => setQuantity(e.target.value)}
