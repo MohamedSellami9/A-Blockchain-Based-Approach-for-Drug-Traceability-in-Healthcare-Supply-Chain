@@ -13,7 +13,8 @@ const Sidebar = (props) => {
           {props.auth.currentUser? (
             <>
           <Nav className="me-auto">
-            
+          <Nav.Link  as={Link} to="/market">Market</Nav.Link>
+          <Nav.Link  as={Link} to="/owned">Owned Drugs</Nav.Link>
             {((props.role=="manufacturer")||(props.role=="admin"))&&<>
             <Nav.Link  as={Link} to="/create">Create Drug</Nav.Link>
             <Nav.Link  as={Link} to="/ordergrid">Orders Grid</Nav.Link></>}
@@ -23,9 +24,9 @@ const Sidebar = (props) => {
             <Nav.Link  as={Link} to="/assign">Assign Orders To Delivery</Nav.Link>
             <Nav.Link  as={Link} to="/delevery">Deliver Orders</Nav.Link></>}
             {(props.role=="admin")&&<>
+            <Nav.Link  as={Link} to="/roles">Roles</Nav.Link>
+            <Nav.Link  as={Link} to="/admin">Edit Users Roles</Nav.Link></>}
             
-            <Nav.Link  as={Link} to="/roles">Roles</Nav.Link></>}
-            <Nav.Link  as={Link} to="/admin">Edit Users Roles</Nav.Link>
           </Nav>
           <Nav className="ms-auto">
           <Nav.Link onClick={props.logout}>Logout</Nav.Link>

@@ -8,6 +8,8 @@ import Home from './Components/Home';
 import CreateDrugForm from './Components/CreateDrugForm';
 import OrderDrug from './Components/OrderDrug';
 import OrderGrid from './Components/OrderGrid';
+import OwnedDrugs from './Components/OwnedDrugs';
+import Market from './Components/Market';
 import Roles from './Components/Roles';
 import {signOut} from "firebase/auth";
 import { auth,db } from "./firebase-config";
@@ -60,11 +62,6 @@ function App() {
     event.preventDefault();
       setAd(event.target.value);
       };
-
-
-
-
-
 	 const create = () => {
 		createDrug()
 	 		.then((tx) => {
@@ -122,6 +119,9 @@ function App() {
 		   <Route path="admin" element={<Rolegrid user={user} setrole={setrole}/>} />
 		   <Route path="delevery" element={<Deleverygrid/>} />
 		   <Route path="assign" element={<AssignDistributor/>} />
+		   <Route path="market" element={<Market/>} />
+		   <Route path="owned" element={<OwnedDrugs role={role} auth={auth} />} />
+
 
 		   {/* ONLY MANUFACTURER */}
 		   <Route element={<RequireAuth role={role} allowedRoles={["admin", "manufacturer"]} />}>

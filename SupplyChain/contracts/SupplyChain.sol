@@ -7,7 +7,7 @@ import './roles/Pharmacy.sol';
 
 contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
     enum OrderStatus {Ordered ,Accepted , Declined, Completed}
-    enum Status {Created  , Ordered , Delivering , Delivered , Sold }
+    enum Status {Created  ,Ordered , Delivering , Delivered,Listed, Sold }
     mapping(uint => Drug) public drugs; 
     uint public drugsNumber=0;  
  
@@ -59,6 +59,26 @@ function getAllDrug() public view returns (Drug[] memory) {
          j++;}
     }
     return drugsAvailable;
+}
+function getAllListedDrugs() public view returns (Drug[] memory){
+        Drug[] memory drugsListed = new Drug[](drugsNumber);
+    uint j=0;
+    for (uint i = 0; i < drugsNumber; i++) {    
+        if ((drugs[i].Status == Status.Listed)&&(drugs[i].price != 0)&&(drugs[i].quantity != 0)){
+        drugsListed[j] = drugs[i];
+         j++;}
+    }
+    return drugsListed;
+}
+function getAllDeliveredDrugs(address ad) public view returns (Drug[] memory){
+        Drug[] memory drugsDelivered = new Drug[](drugsNumber);
+    uint j=0;
+    for (uint i = 0; i < drugsNumber; i++) {    
+        if (((drugs[i].Status == Status.Delivered)||(drugs[i].Status == Status.Created)||(drugs[i].Status == Status.Sold))&&(drugs[i].price != 0)&&(drugs[i].quantity != 0)&&(ad==drugs[i].ownerID)){
+        drugsDelivered[j] = drugs[i];
+         j++;}
+    }
+    return drugsDelivered;
 }
 function getAllOrders(address ad) public view returns (Order[] memory) {
     Order[] memory OrdersAvailable = new Order[](orderNumber);
@@ -172,14 +192,14 @@ event OrderAdded(
         if (n>0){
             drugs[orders[orderIndex].drugIndex].quantity-=orders[orderIndex].quantity;
             drugs[orders[orderIndex].drugIndex].Status=Status.Created;
-            orders[orderIndex].Status = OrderStatus.Accepted;
             Drug memory drug2 =drugCreate(drugs[orders[orderIndex].drugIndex].name,drugs[orders[orderIndex].drugIndex].description,drugs[orders[orderIndex].drugIndex].price,drugs[orders[orderIndex].drugIndex].tempC,orders[orderIndex].quantity,drugs[orders[orderIndex].drugIndex].date);
             drug2.manufacturer=drugs[orders[orderIndex].drugIndex].manufacturer;
             drug2.Status=Status.Ordered;
             drugs[drug2.id]=drug2;
-            Order memory order1 = orderDrug(drug2.id ,orders[orderIndex].quantity);
-            order1.Status=OrderStatus.Accepted;
-            orders[order1.id].Status=OrderStatus.Accepted;
+            orders[orderIndex].drugIndex=drug2.id; 
+            drugs[drug2.id].quantity=orders[orderIndex].quantity;            
+            orders[orderIndex].Status=OrderStatus.Accepted;
+            drugs[drug2.id].ownerID= orders[orderIndex].pharmacy;
         }
         else if(n==0){
             orders[orderIndex].Status = OrderStatus.Accepted;
@@ -207,10 +227,18 @@ event OrderAdded(
         drugs[index].ownerID = orders[orderIndex].pharmacy;
     }
     function buyDrug(uint index) public {
+        drugs[index].quantity = drugs[index].quantity-1 ;
+        Drug memory drug2 =drugCreate(drugs[index].name,drugs[index].description,drugs[index].price,drugs[index].tempC,drugs[index].quantity,drugs[index].date);
+        drugs[drug2.id].Status = Status.Sold;
+        drugs[drug2.id].quantity = 1;
+        if(drugs[index].quantity==0){
         drugs[index].Status = Status.Sold;
-        drugs[index].ownerID = msg.sender;
+        }
+        drugs[drug2.id].ownerID = msg.sender;
     }
-
+    function listDrugs(uint index) public{
+        drugs[index].Status = Status.Listed;
+    }
 function setDistributor(uint orderId) public  {
     require(orders[orderId].Status == OrderStatus.Accepted, "Order has not been placed yet");
     orders[orderId].distributor = msg.sender;

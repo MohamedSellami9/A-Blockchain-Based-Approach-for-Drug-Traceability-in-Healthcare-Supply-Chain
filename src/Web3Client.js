@@ -181,7 +181,16 @@ export const createDrug = async (name, description, price,tempc,quantity,date) =
 	const drug = await supplyContract.methods.drugs(num-1).call();
     return drug;
 };
-
+export const buyDrug = async (id) => {
+	if (!isInitialized) {
+	  await init();
+	}
+  
+	const result = await supplyContract.methods
+	  .buyDrug(id)
+	  .send({ from: selectedAccount });
+	return result;
+  };
 //  export const giveClientRole = async () => {
 // 	if (!isInitialized) {
 // 		 await init();
@@ -221,6 +230,17 @@ export const order = async (id,quantity) => {
   
 	return result;
   };
+  export const priceChanger = async (id,price) => {
+	if (!isInitialized) {
+	  await init();
+	}
+  
+	const result = await supplyContract.methods
+	  .priceChanger(id,price)
+	  .send({ from: selectedAccount });
+  
+	return result;
+  };
   export const endDeliver = async (id) => {
 	if (!isInitialized) {
 	  await init();
@@ -240,6 +260,16 @@ export const order = async (id,quantity) => {
 
    const result = await supplyContract.methods
 	   .AcceptOrder(id)
+		.send({ from: selectedAccount });
+	return result;
+};
+export const listDrug = async (id) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   const result = await supplyContract.methods
+	   .listDrugs(id)
 		.send({ from: selectedAccount });
 	return result;
 };
@@ -378,6 +408,7 @@ export const getAllOrdersAcceptednotassigned = async () => {
 		drugIndex:order.drugIndex,
 		pharmacy:order.pharmacy,
 		distributor:order.distributor,
+		quantity: order.quantity,
 		manufacturer:order.manufacturer
 	  }));
     return orderssAvailableObj;
@@ -401,6 +432,7 @@ export const getAllOrdersAcceptedassigned = async () => {
 		drugIndex:order.drugIndex,
 		pharmacy:order.pharmacy,
 		distributor:order.distributor,
+		quantity: order.quantity,
 		Status:order.Status
 	  }));
     return orderssAvailableObj;
@@ -422,6 +454,47 @@ export function subscribeToAcceptOrder(callback) {
 		.call();
 };
 
+export const getAllListedDrugs = async () => {
+    if (!isInitialized) {
+        await init();
+    }
+
+    const drugsAvailable = await supplyContract.methods.getAllListedDrugs().call();
+    const drugsAvailableObj = drugsAvailable.map((drug) => ({
+        id: drug.id,
+        name: drug.name,
+        description: drug.description,
+        price: drug.price ,
+		manufacturer: drug.manufacturer ,
+		ownerId: drug.ownerId,
+		tempC : drug.tempC,
+		quantity : drug.quantity,
+		date: drug.date
+
+	  }));
+    return drugsAvailableObj;
+};
+
+export const getAllDeliveredDrugs = async () => {
+    if (!isInitialized) {
+        await init();
+    }
+
+    const drugsAvailable = await supplyContract.methods.getAllDeliveredDrugs(selectedAccount).call();
+    const drugsAvailableObj = drugsAvailable.map((drug) => ({
+        id: drug.id,
+        name: drug.name,
+        description: drug.description,	
+        price: drug.price ,
+		manufacturer: drug.manufacturer ,
+		ownerId: drug.ownerId,
+		tempC : drug.tempC,
+		quantity : drug.quantity,
+		date: drug.date
+
+	  }));
+    return drugsAvailableObj;
+};
 
 
 

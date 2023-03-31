@@ -11,6 +11,7 @@ function Deleverygrid({}) {
       { headerName: "Pharmacy", field: "pharmacy", sortable: true, filter: true },
       { headerName: "Distributor", field: "distributor", sortable: true, filter: true },
       { headerName: "Status", field: "status", sortable: true, filter: true },
+      { headerName: "Quantity", field: "quantity", sortable: true, filter: true },
       { headerName: "Drug Status", field: "drugStatus", sortable: true, filter: true },
       { headerName: "refresh", field: "refresh", sortable: true, filter: true },
       {
@@ -53,6 +54,7 @@ function Deleverygrid({}) {
         pharmacy: order.pharmacy,
         distributor: order.distributor,
         status: order.Status,
+        quantity: order.quantity,
         drugStatus:statusArray[order.id],
         refresh:true
       }));

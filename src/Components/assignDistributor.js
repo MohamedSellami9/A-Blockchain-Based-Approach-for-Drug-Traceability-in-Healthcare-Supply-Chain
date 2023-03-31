@@ -8,6 +8,7 @@ function AssignDistributor({}) {
     columnDefs: [
       { headerName: "ID", field: "id", sortable: true, filter: true },
       { headerName: "Drug Index", field: "drugIndex", sortable: true, filter: true },
+      { headerName: "Quantity", field: "quantity", sortable: true, filter: true },
       { headerName: "Pharmacy", field: "pharmacy", sortable: true, filter: true },
       { headerName: "manufacturer", field: "manufacturer", sortable: true, filter: true },
       {
@@ -39,6 +40,7 @@ function AssignDistributor({}) {
         drugIndex: order.drugIndex,
         pharmacy: order.pharmacy,
         distributor: order.distributor,
+        quantity: order.quantity,
         manufacturer: order.manufacturer
 
       }));
@@ -56,6 +58,7 @@ function AssignDistributor({}) {
     drugIndex: order.drugIndex,
     pharmacy: order.pharmacy,
     distributor: order.distributor,
+    quantity: order.quantity,
     manufacturer: order.manufacturer
   }));
 
