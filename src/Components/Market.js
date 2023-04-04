@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { buyDrug,getAllListedDrugs,priceChanger, selectedAccount, subscribeToDrugAdded,getDrug } from '../Web3Client.js';
 import { AgGridReact } from 'ag-grid-react';
+import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import "ag-grid-community";
 import '../App.css';
 import './CSS/Market.css';
@@ -28,13 +29,92 @@ function Market() {
       width: 120,
       cellRenderer: 'actionsRenderer',
       cellRendererParams: {
-        onClick:async (row) => {
+        onClick: async (row) => {
           console.log("Accepted order:", row);
-          const List = await buyDrug(row.id);
-          console.log(console.log(row.id));
+          const drugInfo = await buyDrug(row.id);
+          const Drug = await getDrug(row.id)
           console.log(row.id);
-          gridRef.current.api.applyTransaction({ remove: [row] });
+                
+          // Create a new PDF document
+          const pdfDoc = await PDFDocument.create();
+                
+          // Add a new page to the document
+          const page = pdfDoc.addPage();
+                
+          // Get the font used for text
+          const font = await pdfDoc.embedFont(StandardFonts.Helvetica, { subset: true });
+          font.encodeText('UTF-8');
+                          
+          // Add text to the page
+          const fontSize = 12;
+          const headerText = `Drug Invoice for Order ID: ${row.id}`;
+          const headerTextWidth = font.widthOfTextAtSize(headerText, fontSize);
+          const headerTextHeight = font.heightAtSize(fontSize);
+          const drugText = `Drug Name: ${Drug.name} Price: ${Drug.price}`;
+          const drugText1 = `Manufacturer: ${Drug.manufacturer}`;
+          const drugText2=`Pharmacy: ${Drug.ownerID}`;
+          const drugText3 = `Creation Date: ${Drug.date}` ;
+          const drugTextLines = drugText.split('\n');
+          const drugTextWidth = font.widthOfTextAtSize(drugText, fontSize);
+          const drugTextHeight = font.heightAtSize(fontSize);
+          page.drawText(headerText, {
+            x: page.getWidth() / 2 - headerTextWidth / 2,
+            y: page.getHeight() - 50,
+            size: fontSize,
+            font: font,
+            color: rgb(0, 0, 0),
+          });
+          page.drawText(drugText, {
+            x: drugTextWidth / 2,
+            y: page.getHeight() / 2 - drugTextHeight / 2,
+            size: fontSize,
+            font: font,
+            color: rgb(0, 0, 0),
+          });
+          page.drawText(drugText1, {
+            x:  drugTextWidth / 2,
+            y: page.getHeight() / 2 - drugTextHeight / 2-20,
+            size: fontSize,
+            font: font,
+            color: rgb(0, 0, 0),
+          });
+          page.drawText(drugText2, {
+            x:  drugTextWidth / 2,
+            y: page.getHeight() / 2 - drugTextHeight / 2 -40,
+            size: fontSize,
+            font: font,
+            color: rgb(0, 0, 0),
+          });
+          page.drawText(drugText3, {
+            x:  drugTextWidth / 2,
+            y: page.getHeight() / 2 - drugTextHeight / 2-30,
+            size: fontSize,
+            font: font,
+            color: rgb(0, 0, 0),
+          });
+                
+          // Get the PDF document as a blob
+          const pdfBytes = await pdfDoc.save();
+                
+          // Convert the blob to a data URL
+          const pdfUrl = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
+                
+          // Open a new window with the PDF document
+          const printWindow = window.open(pdfUrl);
+                
+          // Wait for the print window to load
+          printWindow.onload = () => {
+            // Print the document
+            printWindow.print();
+                
+            // Revoke the data URL to free up memory
+            URL.revokeObjectURL(pdfUrl);
+          };
+                
+          // Refresh the UI grid
+          gridRef.current.api.refreshCells({ rowNodes: [row] });
         }
+        
       }
     },
     { field: 'id', headerName: 'ID', width: 90 },

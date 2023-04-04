@@ -273,6 +273,7 @@ export const listDrug = async (id) => {
 		.send({ from: selectedAccount });
 	return result;
 };
+
 export const orderStatus = async (id) => {
 	if (!isInitialized) {
 		await init();

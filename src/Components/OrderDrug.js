@@ -69,7 +69,7 @@ function OrderDrug({ orderr, acceptt, orderd }) {
       selectedRowsElement.innerHTML =
         selectedRows.length === 1 ? selectedRows[0].athlete : '';
     }
-  }, []);
+  },);
   const handleButtonClick = async () => {
     const selectedRows = gridRef.current.api.getSelectedRows();
     const selectedIds = selectedRows.map(row => row.id);

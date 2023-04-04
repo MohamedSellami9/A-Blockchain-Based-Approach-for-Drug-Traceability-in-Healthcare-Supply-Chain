@@ -6,7 +6,7 @@ import { listDrug,getAllDeliveredDrugs,priceChanger, selectedAccount, subscribeT
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community";
 import '../App.css';
-import './CSS/Owneddrugs';
+import './CSS/Owneddrugs.css';
 
 function OwnedDrug(props) {
   const [drugsDelivered, setDrugsDelivered] = useState([]);
