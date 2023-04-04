@@ -18,6 +18,7 @@ import {
     signOut,
 } from "firebase/auth";
 import { Link, useNavigate } from 'react-router-dom';
+import './CSS/Login.css'; 
 
 function Login(props) {
   const [formdata, setformdata] = useState({email:'',

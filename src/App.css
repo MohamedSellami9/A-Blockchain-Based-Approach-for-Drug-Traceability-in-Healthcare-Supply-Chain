@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 input[type="text"] {
@@ -55,4 +58,7 @@ div > button {
 h4 {
   margin-top: 20px;
   margin-bottom: 10px;
+}
+footer{
+  margin-top: auto;
 }

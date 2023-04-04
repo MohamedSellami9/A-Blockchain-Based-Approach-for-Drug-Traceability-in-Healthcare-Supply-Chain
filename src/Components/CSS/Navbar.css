@@ -1,30 +1,37 @@
 /* Navbar background color and height */
 .navbar {
     background-color: #3d7089;
-    height: 75px;
-    font-size: 14px;
+    color:#ffffff ;
+    text-decoration:none;
   }
   
   /* Navbar brand link color and font size */
   .navbar-brand,
   .navbar-brand:hover,
   .navbar-brand:focus {
-    color: #fff;
+    color: #ffffff;
     font-size: 1.3rem;
     font-weight: bold;
+    margin-top:0;
   }
   
   /* Navbar link color, font size, and padding */
-  .navbar-nav .nav-link {
-    color: #fff;
-    font-size: 1rem;
-    padding: 1.5rem 1rem;
+  .navbar-nav  {
+    color: #ffffff;
+    font-size: 1.1rem;
+    
   }
-  
+  .nav-link, .nav-link:link{ 
+    color: #ffffff;
+    font-size: 1.1rem;
+    padding: 0.3rem 1rem;
+  }
+ 
   /* Navbar link hover background color */
-  .navbar-nav .nav-link:hover,
+  .navbar-nav .nav-link:hover, 
   .navbar-nav .nav-link:focus {
-    background-color: #5297b9;
+    background-color: #2f566a;
+    color: white;
   }
   
   /* Navbar active link background color */
@@ -32,13 +39,17 @@
   .navbar-nav .nav-link.active,
   .navbar-nav .nav-link.show,
   .navbar-nav .show > .nav-link {
-    background-color: #1d2124;
+    background-color: #ffffff;
   }
   
   /* Navbar toggler color and border radius */
   .navbar-toggler {
     border-color: #fff;
     border-radius: 0.25rem;
+    margin-top: 0px;
+  }
+  .navbar-toggler:hover{
+    background-color: #2f566a;
   }
   
   /* Navbar toggler icon color */
@@ -57,7 +68,7 @@
   /* Navbar dropdown menu link hover background color */
   .dropdown-menu .dropdown-item:hover,
   .dropdown-menu .dropdown-item:focus {
-    background-color: #292d31;
+    background-color: #2f566a;
   }
   
   /* Navbar dropdown menu active link background color */
@@ -78,5 +89,5 @@
     background-color: #3d7089; /* set the background color */
     overflow: hidden; /* hide any overflow */
     z-index: 9999;
-
+    
   }

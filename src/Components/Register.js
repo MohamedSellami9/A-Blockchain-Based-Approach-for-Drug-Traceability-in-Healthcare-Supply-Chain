@@ -13,6 +13,7 @@ import {
     createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { Link, useNavigate } from 'react-router-dom';
+import './CSS/Register.css'; 
 function Register(props) {
   const [formdata, setformdata] = useState({email:'',
                                             password:'',
