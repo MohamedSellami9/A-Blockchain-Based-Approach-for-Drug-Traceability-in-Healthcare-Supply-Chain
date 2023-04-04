@@ -489,6 +489,8 @@ export const getAllDeliveredDrugs = async () => {
         price: drug.price ,
 		manufacturer: drug.manufacturer ,
 		ownerId: drug.ownerId,
+		pharmacy :drug.pharmacy,
+		distributor :drug.distributor,
 		tempC : drug.tempC,
 		quantity : drug.quantity,
 		date: drug.date

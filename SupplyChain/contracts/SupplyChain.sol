@@ -21,6 +21,8 @@ contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
         string description;
         address manufacturer;
         address ownerID;
+        address pharmacy;
+        address distributor;
         int price;
         Status Status;
         int tempC;
@@ -149,6 +151,8 @@ function drugCreate(string memory name1, string memory description1, int price ,
         Status : Status.Created,
         price : price ,
         ownerID : msg.sender,
+        pharmacy : msg.sender,
+        distributor : msg.sender,
         tempC : tempC,
         quantity : quantity,
         date : date
@@ -200,9 +204,11 @@ event OrderAdded(
             drugs[drug2.id].quantity=orders[orderIndex].quantity;            
             orders[orderIndex].Status=OrderStatus.Accepted;
             drugs[drug2.id].ownerID= orders[orderIndex].pharmacy;
+            drugs[drug2.id].pharmacy= orders[orderIndex].pharmacy;
         }
         else if(n==0){
             orders[orderIndex].Status = OrderStatus.Accepted;
+            drugs[orders[orderIndex].drugIndex].pharmacy= orders[orderIndex].pharmacy;
         }
         else {
             drugs[orders[orderIndex].drugIndex].Status=Status.Created;
@@ -217,7 +223,8 @@ event OrderAdded(
         orders[orderIndex].distributor = msg.sender;
         uint index = orders[orderIndex].drugIndex;
         drugs[index].Status = Status.Delivering;
-        drugs[index].ownerID = orders[orderIndex].distributor;
+        drugs[index].distributor = orders[orderIndex].distributor;
+
 
     }
     function endDelivering(uint orderIndex) public {

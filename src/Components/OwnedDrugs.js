@@ -44,7 +44,7 @@ function OwnedDrug(props) {
     { field: 'description', headerName: 'Description', width: 250 },
     { field: 'price', headerName: 'Price', width: 120,editable: true },
     {field:'manufacturer',headerName: 'Manufacturer', width:200},
-    {field:'ownerID',headerName: 'Pharmacy', width:200},
+    {field:'pharmacy',headerName: 'Pharmacy', width:200},
     {field:'quantity',headerName: 'Q', width:90},
     {field:'tempC',headerName: 'T°', width:90,editable: true},
     {field:'date',headerName: 'date', width:200},
@@ -71,6 +71,7 @@ function OwnedDrug(props) {
     price: drug.price,
     manufacturer: drug.manufacturer,
     ownerID : drug.ownerID,
+    pharmacy:drug.pharmacy,
     quantity : drug.quantity,
     tempC: drug.tempC,
     date: drug.date
