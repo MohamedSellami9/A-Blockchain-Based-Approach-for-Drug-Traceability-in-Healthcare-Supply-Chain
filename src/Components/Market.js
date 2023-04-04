@@ -6,8 +6,8 @@ import { buyDrug,getAllListedDrugs,priceChanger, selectedAccount, subscribeToDru
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community";
 import '../App.css';
-
-function OwnedDrug() {
+import './Market.css';
+function Market() {
   const [drugsListed, setDrugsListed] = useState([]);
   const [selectedDrugs, setSelectedDrugs] = useState([]);
   const [quantity, setQuantity] = useState('');
@@ -91,4 +91,4 @@ function OwnedDrug() {
   );
 }
 
-export default OwnedDrug;
+export default Market;

@@ -1,0 +1,75 @@
+/* Navbar background color and height */
+.navbar {
+    background-color: #12569b;
+    height: 70px;
+    font-size: 14px;
+  }
+  
+  /* Navbar brand link color and font size */
+  .navbar-brand,
+  .navbar-brand:hover,
+  .navbar-brand:focus {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  /* Navbar link color, font size, and padding */
+  .navbar-nav .nav-link {
+    color: #fff;
+    font-size: 1rem;
+    padding: 1.5rem 1rem;
+  }
+  
+  /* Navbar link hover background color */
+  .navbar-nav .nav-link:hover,
+  .navbar-nav .nav-link:focus {
+    background-color: #7ebed7;
+  }
+  
+  /* Navbar active link background color */
+  .navbar-nav .active > .nav-link,
+  .navbar-nav .nav-link.active,
+  .navbar-nav .nav-link.show,
+  .navbar-nav .show > .nav-link {
+    background-color: #1d2124;
+  }
+  
+  /* Navbar toggler color and border radius */
+  .navbar-toggler {
+    border-color: #fff;
+    border-radius: 0.25rem;
+  }
+  
+  /* Navbar toggler icon color */
+  .navbar-toggler-icon {
+    color: #fff;
+  }
+  
+  /* Navbar dropdown menu background color, link color, and font size */
+  .dropdown-menu {
+    background-color: #343a40;
+    color: #fff;
+    font-size: 1.2rem;
+    z-index: 9999;
+
+  }
+  
+  /* Navbar dropdown menu link hover background color */
+  .dropdown-menu .dropdown-item:hover,
+  .dropdown-menu .dropdown-item:focus {
+    background-color: #292d31;
+    
+  }
+  
+  /* Navbar dropdown menu active link background color */
+  .dropdown-menu .active > .dropdown-item,
+  .dropdown-menu .dropdown-item.active,
+  .dropdown-menu .dropdown-item.show,
+  .dropdown-menu .show > .dropdown-item {
+    background-color: #1d2124;
+  }
+  
+  .dropdown-menu {
+    z-index: 9999;
+  }
