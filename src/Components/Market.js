@@ -6,7 +6,7 @@ import { buyDrug,getAllListedDrugs,priceChanger, selectedAccount, subscribeToDru
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community";
 import '../App.css';
-import './Market.css';
+import './CSS/Market.css';
 function Market() {
   const [drugsListed, setDrugsListed] = useState([]);
   const [selectedDrugs, setSelectedDrugs] = useState([]);
@@ -23,6 +23,20 @@ function Market() {
   }, []);
 
   const columnDefs = [
+    {
+      headerName: 'Buy',
+      width: 120,
+      cellRenderer: 'actionsRenderer',
+      cellRendererParams: {
+        onClick:async (row) => {
+          console.log("Accepted order:", row);
+          const List = await buyDrug(row.id);
+          console.log(console.log(row.id));
+          console.log(row.id);
+          gridRef.current.api.applyTransaction({ remove: [row] });
+        }
+      }
+    },
     { field: 'id', headerName: 'ID', width: 90 },
     { field: 'name', headerName: 'Name', width: 150 },
     { field: 'description', headerName: 'Description', width: 250 },
@@ -32,20 +46,7 @@ function Market() {
     {field:'quantity',headerName: 'Q', width:90},
     {field:'tempC',headerName: 'T°', width:90,},
     {field:'date',headerName: 'date', width:200},
-    {
-        headerName: 'Buy',
-        width: 120,
-        cellRenderer: 'actionsRenderer',
-        cellRendererParams: {
-          onClick:async (row) => {
-            console.log("Accepted order:", row);
-            const List = await buyDrug(row.id);
-            console.log(console.log(row.id));
-            console.log(row.id);
-            gridRef.current.api.applyTransaction({ remove: [row] });
-          }
-        }
-      }
+    
 
   ];
   const actionsRenderer = useCallback((props) => {

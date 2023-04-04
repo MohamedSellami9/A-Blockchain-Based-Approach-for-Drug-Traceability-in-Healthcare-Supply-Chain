@@ -1,5 +1,5 @@
 import React from 'react';
-import './Home.css';
+import './CSS/Home.css';
 import supplyChainDiagram from './Images/Illustration_Supply-Chain-Management.png';
 import { Link } from 'react-router-dom';
 function Home() {

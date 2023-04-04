@@ -5,6 +5,7 @@ import Sidebar from './Components/Navbar';
 import Login from './Components/Login';
 import Register from './Components/Register';
 import Home from './Components/Home';
+import Footer from './Components/Footer';
 import CreateDrugForm from './Components/CreateDrugForm';
 import OrderDrug from './Components/OrderDrug';
 import OrderGrid from './Components/OrderGrid';
@@ -142,7 +143,7 @@ function App() {
 		  <Route path="*" element={<Notfound />} />
 		  </Route>
         </Routes>
-     
+	<Footer />
     </div>
   );
 }

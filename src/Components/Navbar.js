@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
-import './Navbar.css';
+import './CSS/Navbar.css';
 
 const Sidebar = (props) => {
 
@@ -33,8 +33,7 @@ const Sidebar = (props) => {
             }
             {(props.role === "admin") &&
               <>
-                <Nav.Link as={Link} to="/roles">Roles</Nav.Link>
-                <Nav.Link as={Link} to="/admin">Edit Users Roles</Nav.Link>
+              <Nav.Link as={Link} to="/admin">Edit Users Roles</Nav.Link>
               </>
             }
           </Nav>

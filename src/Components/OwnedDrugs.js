@@ -6,6 +6,7 @@ import { listDrug,getAllDeliveredDrugs,priceChanger, selectedAccount, subscribeT
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community";
 import '../App.css';
+import './CSS/Owneddrugs';
 
 function OwnedDrug(props) {
   const [drugsDelivered, setDrugsDelivered] = useState([]);
@@ -23,15 +24,6 @@ function OwnedDrug(props) {
   }, []);
 
   const columnDefs = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    { field: 'name', headerName: 'Name', width: 150 },
-    { field: 'description', headerName: 'Description', width: 250 },
-    { field: 'price', headerName: 'Price', width: 120,editable: true },
-    {field:'manufacturer',headerName: 'Manufacturer', width:200},
-    {field:'ownerID',headerName: 'Pharmacy', width:200},
-    {field:'quantity',headerName: 'Q', width:90},
-    {field:'tempC',headerName: 'T°', width:90,editable: true},
-    {field:'date',headerName: 'date', width:200},
     {
       headerName: 'List',
       width: 120,
@@ -46,7 +38,17 @@ function OwnedDrug(props) {
         }
       },
       hide: !((props.role === "admin")||(props.role === "pharmacy"))
-    }
+    },
+    { field: 'id', headerName: 'ID', width: 90 },
+    { field: 'name', headerName: 'Name', width: 150 },
+    { field: 'description', headerName: 'Description', width: 250 },
+    { field: 'price', headerName: 'Price', width: 120,editable: true },
+    {field:'manufacturer',headerName: 'Manufacturer', width:200},
+    {field:'ownerID',headerName: 'Pharmacy', width:200},
+    {field:'quantity',headerName: 'Q', width:90},
+    {field:'tempC',headerName: 'T°', width:90,editable: true},
+    {field:'date',headerName: 'date', width:200},
+
   ];
   const onCellValueChanged = (params) => {
     const { node, colDef, newValue } = params;

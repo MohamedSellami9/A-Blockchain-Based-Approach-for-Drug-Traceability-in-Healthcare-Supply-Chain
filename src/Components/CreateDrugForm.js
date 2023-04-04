@@ -1,33 +1,35 @@
-import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import { AgGridReact } from 'ag-grid-react';
-import Button from 'react-bootstrap/Button';
-import { getOrdersAvailable } from '../Web3Client';
+import React, { useState, useCallback } from 'react';
 import { createDrug } from '../Web3Client';
-import './Create.css';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import './CSS/Create.css';
+
 function CreateDrugForm() {
   const [formdata, setformdata] = useState({
     name: '',
     description: '',
-    price: null,
-    quantity: null,
-    tempC: null,
-    text: ''
+    price: '',
+    quantity: '',
+    tempC: '',
   });
   const [showMessage, setShowMessage] = useState(false);
 
   const handleChange = useCallback((event) => {
-    setformdata(old => {
-      return {
-        ...old,
-        [event.target.name]: event.target.value
-      };
-    });
+    const { name, value } = event.target;
+    setformdata((prevFormData) => ({ ...prevFormData, [name]: value }));
   }, []);
 
   const handlecreateDrug = useCallback(async () => {
     const d = new Date();
     let text = d.toString();
-    const drug = await createDrug(formdata.name, formdata.description,formdata.price,formdata.tempC,formdata.quantity,text);
+    const drug = await createDrug(
+      formdata.name,
+      formdata.description,
+      formdata.price,
+      formdata.tempC,
+      formdata.quantity,
+      text
+    );
     setShowMessage(true);
     setTimeout(() => setShowMessage(false), 6000);
     console.log('created drug:', drug);
@@ -35,38 +37,64 @@ function CreateDrugForm() {
 
   return (
     <div className="create-drug-form">
-      <form>
-        <label>
-          Name:
-          <input type="text" name='name' value={formdata.name} onChange={handleChange} />
-        </label>
-        <br />
-        <label>
-          Description:
-          <input type="text" name='description' value={formdata.description} onChange={handleChange} />
-        </label>
-        <br />
-        <label>
-          Price/U:
-          <input type="number" name='price' value={formdata.price} onChange={handleChange} />
-        </label>
-        <br />
-        <label>
-          Quantity:
-          <input type="number" name='quantity' value={formdata.quantity} onChange={handleChange} />
-        </label>
-        <br />
-        <label>
-          Conservation temperature:
-          <input type="number" name='tempC' value={formdata.tempC} onChange={handleChange} />
-        </label>
-        <br />
-        <Button variant='dark' onClick={handlecreateDrug}>Create Drug</Button>
+      <Form>
+        <Form.Group controlId="formDrugName">
+          <Form.Label>Drug Name:</Form.Label>
+          <Form.Control
+            type="text"
+            name="name"
+            placeholder="Enter name"
+            value={formdata.name}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group controlId="formDrugDescription">
+          <Form.Label>Drug Description:</Form.Label>
+          <Form.Control
+            type="text"
+            name="description"
+            placeholder="Enter description"
+            value={formdata.description}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group controlId="formDrugPrice">
+          <Form.Label>Price/U:</Form.Label>
+          <Form.Control
+            type="number"
+            name="price"
+            placeholder="Enter price"
+            value={formdata.price}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group controlId="formDrugQuantity">
+          <Form.Label>Quantity:</Form.Label>
+          <Form.Control
+            type="number"
+            name="quantity"
+            placeholder="Enter quantity"
+            value={formdata.quantity}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group controlId="formDrugTempC">
+          <Form.Label>Conservation Temperature:</Form.Label>
+          <Form.Control
+            type="number"
+            name="tempC"
+            placeholder="Enter temperature"
+            value={formdata.tempC}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Button variant="dark" onClick={handlecreateDrug}>
+          Create Drug
+        </Button>
         {showMessage && <p>The drug is created.</p>}
-      </form>
+      </Form>
     </div>
   );
 }
 
 export default CreateDrugForm;
-
