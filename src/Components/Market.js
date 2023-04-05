@@ -153,22 +153,27 @@ function Market() {
   }, []);
 
   return (
-    <div>
-      <div>
-      <div
-        className="ag-theme-material"
-        style={{margin:'23%', marginTop:'10px',marginBottom:'10px' , height: '500px', width: '60%' }}
-      >
-        <AgGridReact
-          columnDefs={columnDefs}
-          rowData={rowData}
-          rowSelection="multiple"
-          frameworkComponents={{ actionsRenderer }}
-          onGridReady={onGridReady}
-        />
-        </div>
-      </div>
-    </div>
+<div class="all">
+<div class="container">
+  <h1 class="title">Market</h1>
+  <br/>
+  <div class="description-container">
+    <p class="description">Please note that you need to have a valid Ethereum account and enough funds in your account to be able to buy drugs from this market. If you're not familiar with Ethereum, you may want to read up on it first and learn how to create an account and fund it with Ether.</p>
+    <p class="description">When you click the "Buy" button, a PDF invoice will be generated for each drug you buy, which you can print and use for your records. The invoice will contain information such as the drug name, price, manufacturer, pharmacy, and creation date.</p>
+  </div>
+  </div>
+  <div class="ag-theme-material">
+    <AgGridReact
+      columnDefs={columnDefs}
+      rowData={rowData}
+      rowSelection="multiple"
+      frameworkComponents={{ actionsRenderer }}
+      onGridReady={onGridReady}
+    />
+  </div>
+</div>
+
+
   );
 }
 
