@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
+import { Form } from 'react-bootstrap';
 import { selectedAccount } from '../Web3Client';
 import {
   collection,
@@ -63,22 +64,25 @@ function Login(props) {
   };
 
   return (
-    <div>
+    <div className='login'>
       <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <label>
+      <Form onSubmit={handleLogin}>
+      <Form.Group controlId="formemail">
+        <Form.Label>
           Email:
-          <input name='email' type="email" value={formdata.email} onChange={handleChange} required />
-        </label>
+        </Form.Label>
+        <Form.Control placeholder='Enter Email' name='email' type="email" value={formdata.email} onChange={handleChange} required />
+        </Form.Group>
         <br />
-        <label>
-          Password:
-          <input name='password' type="password" value={formdata.password} onChange={handleChange} required />
-        </label>
+        <Form.Group controlId="formpswrd">
+        <Form.Label>
+          Password:</Form.Label>
+          <Form.Control placeholder='Enter Password' name='password' type="password" value={formdata.password} onChange={handleChange} required />
+          </Form.Group>
         <br />
         {errorMessage && <p>{errorMessage}</p>}
         <Button type="submit">Login</Button>
-      </form>
+      </Form>
       <p>Don't have an account? <Link to="/register">Register</Link></p>
     </div>
   );

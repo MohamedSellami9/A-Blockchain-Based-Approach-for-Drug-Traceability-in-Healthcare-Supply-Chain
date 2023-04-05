@@ -7,6 +7,7 @@ import {
   doc,
   setDoc, query, where
 } from "firebase/firestore";
+import { Form } from 'react-bootstrap';
 
 import { auth,db } from "../firebase-config";
 import {
@@ -68,22 +69,26 @@ function Register(props) {
     };
 
   return (
-    <div>
+    <div className='register'>
       <h2>Register</h2>
-      <form onSubmit={handleRegister}>
-        <label>
-          Email:
-          <input name='email' type="email" value={formdata.email} onChange={handleChange} required />
-        </label>
+      <Form onSubmit={handleRegister}>
+      <Form.Group controlId="formemail">
+        <Form.Label>
+          Email: </Form.Label>
+          <Form.Control placeholder='Enter Email' name='email' type="email" value={formdata.email} onChange={handleChange} required />
+       </Form.Group>
         <br />
-        <label>
-          Password:
-          <input name='password' type="password" value={formdata.password} onChange={handleChange} required />
-        </label>
+        <Form.Group controlId="from pswrd">
+        <Form.Label>
+          Password:</Form.Label>
+          <Form.Control placeholder='Enter Password' name='password' type="password" value={formdata.password} onChange={handleChange} required />
+        
+        </Form.Group>
         <br />
-        <label>
-          Choose role:
-          <select name='role' value={formdata.role} onChange={handleChange}>
+        <Form.Group controlId="from pswrd">
+        <Form.Label>
+          Choose role: </Form.Label>
+          <select class="form-select" name='role' value={formdata.role} onChange={handleChange}>
           <option value="admin">admin</option>
           <option value="distributor">distributor</option>
           <option value="client">client</option>
@@ -91,10 +96,11 @@ function Register(props) {
             <option value="pharmacy">pharmacy</option>
             
           </select>
-        </label>
+       
+        </Form.Group>
         {errorMessage && <p>{errorMessage}</p>}
         <Button variant='dark' disabled={!buttonstatus} type="submit">Register</Button>
-      </form>
+      </Form>
       <p>Already have an account? <Link to="/login">Login</Link></p>
     </div>
   );
