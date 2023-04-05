@@ -18,7 +18,8 @@ import './CSS/Register.css';
 function Register(props) {
   const [formdata, setformdata] = useState({email:'',
                                             password:'',
-                                          role:'client'});
+                                          role:'client',
+                                        name:''});
   const [errorMessage, setErrorMessage] = useState(null);
   const [buttonstatus, setbuttonstatus] = useState(true)
   const usersCollectionRef = collection(db, "users");
@@ -55,7 +56,8 @@ function Register(props) {
           useruid : auth.currentUser.uid,
           wallet : selectedAccount,
           role:formdata.role,
-          email:formdata.email
+          email:formdata.email,
+          name:formdata.name
         }).then(() => {
             navigate('/');
         })
@@ -76,6 +78,12 @@ function Register(props) {
         <Form.Label>
           Email: </Form.Label>
           <Form.Control placeholder='Enter Email' name='email' type="email" value={formdata.email} onChange={handleChange} required />
+       </Form.Group>
+        <br />
+        <Form.Group controlId="formname">
+        <Form.Label>
+          Name: </Form.Label>
+          <Form.Control placeholder='Enter Name' name='name' type="text" value={formdata.name} onChange={handleChange} required />
        </Form.Group>
         <br />
         <Form.Group controlId="from pswrd">
