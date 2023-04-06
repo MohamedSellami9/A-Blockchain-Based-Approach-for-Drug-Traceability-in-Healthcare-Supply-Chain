@@ -414,14 +414,6 @@ export const getAllOrdersAcceptednotassigned = async () => {
 	  }));
     return orderssAvailableObj;
 };
-export const getStatus = async () => {
-    if (!isInitialized) {
-        await init();
-    }
-
-    const ordersAvailable = await supplyContract.methods.getAllStatus().call();
-    return ordersAvailable;
-};
 export const getAllOrdersAcceptedassigned = async () => {
     if (!isInitialized) {
         await init();
@@ -429,12 +421,7 @@ export const getAllOrdersAcceptedassigned = async () => {
 
     const ordersAvailable = await supplyContract.methods.getAllOrdersAccepted(selectedAccount).call();
     const orderssAvailableObj = ordersAvailable.map((order) => ({
-		id: order.id ,
-		drugIndex:order.drugIndex,
-		pharmacy:order.pharmacy,
-		distributor:order.distributor,
-		quantity: order.quantity,
-		Status:order.Status
+		...order
 	  }));
     return orderssAvailableObj;
 };
