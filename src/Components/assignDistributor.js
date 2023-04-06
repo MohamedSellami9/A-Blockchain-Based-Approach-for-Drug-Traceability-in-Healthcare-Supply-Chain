@@ -83,7 +83,7 @@ function AssignDistributor({}) {
 
   return (
     <div className="ag-theme-material"
-    style={{margin:'23%', marginTop:'10px',marginBottom:'10px' , height: '500px', width: '60%' }}>
+    style={{margin:'5%', marginTop:'10px' , height: '400px', width: '90%' }}>
       <AgGridReact
         columnDefs={gridOptions.columnDefs}
         rowData={gridOptions.rowData}

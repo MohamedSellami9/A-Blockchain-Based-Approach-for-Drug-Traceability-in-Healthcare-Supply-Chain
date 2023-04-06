@@ -170,7 +170,7 @@ function Market() {
     <p class="description">When you click the "Buy" button, a PDF invoice will be generated for each drug you buy, which you can print and use for your records. The invoice will contain information such as the drug name, price, manufacturer, pharmacy, and creation date.</p>
   </div>
   </div>
-  <div class="ag-theme-material">
+  <div class="ag-theme-material" style={{margin:'5%', marginTop:'10px' , height: '400px', width: '90%' }}>
     <AgGridReact
       columnDefs={columnDefs}
       rowData={drugsListed}
