@@ -1,24 +1,47 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
+import { Form } from 'react-bootstrap';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { order,getDrugsAvailable, selectedAccount, subscribeToDrugAdded,getDrug } from '../Web3Client.js';
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community";
 import '../App.css';
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc, query, where
+} from "firebase/firestore";
+import { auth,db } from "../firebase-config";
+
 
 function OrderDrug({ orderr, acceptt, orderd }) {
   const [drugsAvailable, setDrugsAvailable] = useState([]);
   const [selectedDrugs, setSelectedDrugs] = useState([]);
   const [quantity, setQuantity] = useState('');
   const gridRef = useRef();
-
+  const usersCollectionRef = collection(db, "users");
   useEffect(() => {
     const fetchDrugs = async () => {
       const drugs = await getDrugsAvailable();
       const filteredDrugs = drugs.filter(order => order.manufacturer !== "0x0000000000000000000000000000000000000000");
-      setDrugsAvailable(filteredDrugs);
+    
+      const data = await getDocs(usersCollectionRef);
+      const users = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      
+      const Drugsfinal = filteredDrugs.map((drug) => {
+
+        const user = users.find((u) => {
+          console.log(u.wallet);
+          console.log(drug.manufacturer);
+          return(u.wallet.toLowerCase() === drug.manufacturer.toLowerCase());});
+        console.log(user);
+        return { ...drug, manufacturer: user ? user.name : drug.manufacturer };
+      });
+      
+      setDrugsAvailable(Drugsfinal);
     };
+   
 
     fetchDrugs();
 
@@ -49,16 +72,16 @@ function OrderDrug({ orderr, acceptt, orderd }) {
 
   ];
 
-  const rowData = drugsAvailable?.map(drug => ({
-    id: drug.id,
-    name: drug.name,
-    description: drug.description,
-    price: drug.price,
-    manufacturer: drug.manufacturer,
-    quantity : drug.quantity,
-    tempC: drug.tempC,
-    date: drug.date
-  }));
+  // const rowData = drugsAvailable?.map(drug => ({
+  //   id: drug.id,
+  //   name: drug.name,
+  //   description: drug.description,
+  //   price: drug.price,
+  //   manufacturer: drug.manufacturer,
+  //   quantity : drug.quantity,
+  //   tempC: drug.tempC,
+  //   date: drug.date
+  // }));
 
   const onSelectionChanged = useCallback(() => {
     const selectedRows = gridRef.current.api.getSelectedRows();
@@ -97,31 +120,34 @@ function OrderDrug({ orderr, acceptt, orderd }) {
   }, []);
 
   return (
-    <div>
+    <div >
       <div
         className="ag-theme-material"
-        style={{margin:'23%', marginTop:'10px',marginBottom:'10px' , height: '500px', width: '60%' }}
+        style={{margin:'5%', marginTop:'10px',marginBottom:'10px' , height: '500px', width: '90%' }}
       >
         <AgGridReact
           columnDefs={columnDefs}
-          rowData={rowData}
+          rowData={drugsAvailable}
           rowSelection="multiple"
           onSelectionChanged={onSelectionChanged}
           onGridReady={onGridReady}
         />
-              <InputGroup className='mb-3'>
-          <Form.Control 
-            type='number' 
-            placeholder='Quantity' 
-            value={quantity} 
-            onChange={(e) => setQuantity(e.target.value)}
-          />
-        </InputGroup>
+       
+           
+        
       </div>
       <br />
       <div>
 
-
+      <Form.Group >
+               
+               <Form.Control
+                 type='number' 
+                 placeholder='Quantity' 
+                 value={quantity} 
+                 onChange={(e) => setQuantity(e.target.value)}
+               />
+             </Form.Group>
         <Button variant='dark' onClick={handleButtonClick}>Order Selected Drugs</Button>
       </div>
     </div>

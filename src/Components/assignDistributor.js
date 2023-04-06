@@ -2,6 +2,13 @@ import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react';
 import Button from 'react-bootstrap/Button';
 import {  startDeliver , Decline ,orderStatus,subscribeToAcceptOrder, getAllOrdersAcceptedassigned, getAllOrdersAcceptednotassigned, assignDistributor} from '../Web3Client';
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc, query, where
+} from "firebase/firestore";
+import { auth,db } from "../firebase-config";
 
 function AssignDistributor({}) {
   const [gridOptions, setGridOptions] = useState({
@@ -29,22 +36,21 @@ function AssignDistributor({}) {
   });
   const gridRef = useRef();
   const [ordersAvailable, setOrdersAvailable] = useState([]);
-
+  const usersCollectionRef = collection(db, "users");
   useEffect(() => {
     const fetchOrders = async () => {
       const orders = await getAllOrdersAcceptednotassigned();
       const filteredOrders = orders.filter(order => order.pharmacy != "0x0000000000000000000000000000000000000000");
       setOrdersAvailable(filteredOrders);
-      const data = orders.map(order => ({
-        id: order.id,
-        drugIndex: order.drugIndex,
-        pharmacy: order.pharmacy,
-        distributor: order.distributor,
-        quantity: order.quantity,
-        manufacturer: order.manufacturer
-
+      const data = await getDocs(usersCollectionRef);
+      const users = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      const orderdata = filteredOrders.map(order => ({
+        ...order,
+        manufacturer: users.find(item => item.wallet.toLowerCase() === order.manufacturer.toLowerCase())?.name || order.manufacturer,
+        pharmacy: users.find(item => item.wallet.toLowerCase() === order.pharmacy.toLowerCase())?.name || order.pharmacy,
       }));
-      setGridOptions({ ...gridOptions, rowData: data });
+    
+      setGridOptions({ ...gridOptions, rowData: orderdata });
     }
     fetchOrders();
     const unsubscribe = subscribeToAcceptOrder(() => {
@@ -80,7 +86,7 @@ function AssignDistributor({}) {
     style={{margin:'23%', marginTop:'10px',marginBottom:'10px' , height: '500px', width: '60%' }}>
       <AgGridReact
         columnDefs={gridOptions.columnDefs}
-        rowData={rowData}
+        rowData={gridOptions.rowData}
         onGridReady={onGridReady}
         frameworkComponents={{ actionsRenderer }}
       />

@@ -8,17 +8,33 @@ import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import "ag-grid-community";
 import '../App.css';
 import './CSS/Market.css';
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc, query, where
+} from "firebase/firestore";
+import { auth,db } from "../firebase-config";
+
 function Market() {
   const [drugsListed, setDrugsListed] = useState([]);
   const [selectedDrugs, setSelectedDrugs] = useState([]);
   const [quantity, setQuantity] = useState('');
   const gridRef = useRef();
-
+  const usersCollectionRef = collection(db, "users")
   useEffect(() => {
     const fetchDrugs = async () => {
       const drugs = await getAllListedDrugs();
       const filteredDrugs = drugs.filter(order => order.manufacturer !== "0x0000000000000000000000000000000000000000");
-      setDrugsListed(filteredDrugs);
+      const dataa = await getDocs(usersCollectionRef);
+     const  users=dataa.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+     console.log(filteredDrugs)
+     const finaldrugs=filteredDrugs.map(drug => ({
+      ...drug,
+      manufacturer: users.find(item => item.wallet.toLowerCase() === drug.manufacturer.toLowerCase())?.name || drug.manufacturer,
+      pharmacy: users.find(item => item.wallet.toLowerCase() === drug.ownerId?.toLowerCase())?.name || drug.pharmacy,
+     }));
+      setDrugsListed(finaldrugs);
     };
     fetchDrugs();
   }, []);
@@ -136,17 +152,9 @@ function Market() {
     </div>
     );
   }, []);
-  const rowData = drugsListed?.map(drug => ({
-    id: drug.id,
-    name: drug.name,
-    description: drug.description,
-    price: drug.price,
-    manufacturer: drug.manufacturer,
-    ownerID : drug.ownerID,
-    quantity : drug.quantity,
-    tempC: drug.tempC,
-    date: drug.date
-  }));
+
+;
+ 
   const onGridReady = useCallback(params => {
     gridRef.current = params;
     params.api.sizeColumnsToFit();
@@ -165,7 +173,7 @@ function Market() {
   <div class="ag-theme-material">
     <AgGridReact
       columnDefs={columnDefs}
-      rowData={rowData}
+      rowData={drugsListed}
       rowSelection="multiple"
       frameworkComponents={{ actionsRenderer }}
       onGridReady={onGridReady}

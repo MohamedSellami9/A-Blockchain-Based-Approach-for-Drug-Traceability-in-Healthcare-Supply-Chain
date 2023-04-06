@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import { selectedAccount } from '../Web3Client';
+import { selectedAccount, setname } from '../Web3Client';
 import {
   collection,
   getDocs,
@@ -59,6 +59,7 @@ function Register(props) {
           email:formdata.email,
           name:formdata.name
         }).then(() => {
+            
             navigate('/');
         })
         .catch(error => {

@@ -27,8 +27,8 @@ export default function Rolegrid(props) {
     const [gridOptions, setGridOptions] = useState({
         columnDefs: [
           { headerName: "ID", field: "useruid", sortable: true, filter: true },
-          { headerName: "Email", field: "email", sortable: true, filter: true },
           { headerName: "Name", field: "name", sortable: true, filter: true },
+          { headerName: "Email", field: "email", sortable: true, filter: true },
           { headerName: "Role", field: "role", sortable: true, filter: true ,editable: true,
           cellEditorSelector:cellEditorSelector,
         },
