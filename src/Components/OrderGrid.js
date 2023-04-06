@@ -2,6 +2,13 @@ import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react';
 import Button from 'react-bootstrap/Button';
 import { getOrdersAvailable, Accept , Decline ,orderStatus,subscribeToAcceptOrder} from '../Web3Client';
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc, query, where
+} from "firebase/firestore";
+import { auth,db } from "../firebase-config";
 
 function OrderGrid({}) {
   const [gridOptions, setGridOptions] = useState({
@@ -10,8 +17,6 @@ function OrderGrid({}) {
       { headerName: "Quantity", field: "quantity", sortable: true, filter: true },
       { headerName: "Drug Index", field: "drugIndex", sortable: true, filter: true },
       { headerName: "Pharmacy", field: "pharmacy", sortable: true, filter: true },
-      { headerName: "Distributor", field: "distributor", sortable: true, filter: true },
-      { headerName: "Status", field: "status", sortable: true, filter: true },
       {
         headerName: "Actions",
         cellRenderer: "actionsRenderer",
@@ -35,22 +40,21 @@ function OrderGrid({}) {
   });
   const gridRef = useRef();
   const [ordersAvailable, setOrdersAvailable] = useState([]);
-
+  const usersCollectionRef = collection(db, "users");
   useEffect(() => {
     const fetchOrders = async () => {
       const orders = await getOrdersAvailable();
       const filteredOrders = orders.filter(order => order.pharmacy != "0x0000000000000000000000000000000000000000");
       setOrdersAvailable(filteredOrders);
-      const data = orders.map(order => ({
-        id: order.id,
-        drugIndex: order.drugIndex,
-        pharmacy: order.pharmacy,
-        distributor: order.distributor,
-        status: order.Status,
-        quantity:order.quantity
+      const data = await getDocs(usersCollectionRef);
+      const users = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      console.log(filteredOrders)
+      const orderdata = filteredOrders.map(order => ({
+        ...order,
+        pharmacy: users.find(item => item.wallet.toLowerCase() === order.pharmacy?.toLowerCase())?.name || order.pharmacy,
 
       }));
-      setGridOptions({ ...gridOptions, rowData: data });
+      setGridOptions({ ...gridOptions, rowData: orderdata });
     }
     fetchOrders();
     const unsubscribe = subscribeToAcceptOrder(() => {
@@ -64,7 +68,7 @@ function OrderGrid({}) {
     drugIndex: order.drugIndex,
     pharmacy: order.pharmacy,
     distributor: order.distributor,
-    status: order.Status,
+    Status: order.Status,
     quantity:order.quantity,
   }));
 
@@ -84,10 +88,10 @@ function OrderGrid({}) {
 
   return (
     <div className="ag-theme-material"
-    style={{margin:'23%', marginTop:'10px',marginBottom:'10px' , height: '500px', width: '60%' }}>
+    style={{margin:'5%', marginTop:'10px',marginBottom:'10px' , height: '500px', width: '90%' }}>
       <AgGridReact
         columnDefs={gridOptions.columnDefs}
-        rowData={rowData}
+        rowData={gridOptions.rowData}
         onGridReady={onGridReady}
         frameworkComponents={{ actionsRenderer }}
       />

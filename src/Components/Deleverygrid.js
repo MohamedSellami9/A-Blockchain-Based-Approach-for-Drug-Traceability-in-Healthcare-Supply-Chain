@@ -1,7 +1,14 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import Button from 'react-bootstrap/Button';
-import {  dele , Decline ,orderStatus,subscribeToAcceptOrder, getAllOrdersAcceptedassigned, getAllOrdersAcceptednotassigned, startDeliver, endDeliver, getStatus} from '../Web3Client';
+import {  dele , Decline ,orderStatus,subscribeToAcceptOrder, getAllOrdersAcceptedassigned, getAllOrdersAcceptednotassigned, startDeliver, endDeliver} from '../Web3Client';
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc, query, where
+} from "firebase/firestore";
+import { auth,db } from "../firebase-config"; 
 
 function Deleverygrid({}) {
   const [gridOptions, setGridOptions] = useState({
@@ -10,22 +17,12 @@ function Deleverygrid({}) {
       { headerName: "Drug Index", field: "drugIndex", sortable: true, filter: true },
       { headerName: "Pharmacy", field: "pharmacy", sortable: true, filter: true },
       { headerName: "Distributor", field: "distributor", sortable: true, filter: true },
-      { headerName: "Status", field: "status", sortable: true, filter: true },
       { headerName: "Quantity", field: "quantity", sortable: true, filter: true },
-      { headerName: "Drug Status", field: "drugStatus", sortable: true, filter: true },
-      { headerName: "refresh", field: "refresh", sortable: true, filter: true },
+      
       {
         headerName: "Actions",
         cellRenderer: "actionsRenderer",
         cellRendererParams: {
-          // onStart: async (row) => {
-          //   console.log("delevering order:", row);
-          //   const accept = await startDeliver(row.id).then(()=>{ gridRef.current.api.refreshCells()});
-          //   // setGridOptions(prevstate => {const table=prevstate.rowData;
-          //   //   table[row.id].refresh=!(table[row.id].refresh);
-          //   //   return({...gridOptions,rowData: table});
-          //   // })
-          // },
           onEnd: async (row) => {
             console.log("delivered order:", row);
             const accept = await endDeliver(row.id);
@@ -40,25 +37,21 @@ function Deleverygrid({}) {
   const gridRef = useRef();
   const [ordersAvailable, setOrdersAvailable] = useState([]);
 
-
+  const usersCollectionRef = collection(db, "users");
   useEffect(() => {
     const fetchOrders = async () => {
       const orders = await getAllOrdersAcceptedassigned();
-      const statusArray = await getStatus();
-      console.log(statusArray)
+
       const filteredOrders = orders.filter(order => order.pharmacy != "0x0000000000000000000000000000000000000000");
       setOrdersAvailable(filteredOrders);
-      const data = filteredOrders.map(order => ({
-        id: order.id,
-        drugIndex: order.drugIndex,
-        pharmacy: order.pharmacy,
-        distributor: order.distributor,
-        status: order.Status,
-        quantity: order.quantity,
-        drugStatus:statusArray[order.id],
-        refresh:true
+      const data = await getDocs(usersCollectionRef);
+      const users = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      const ordersdata = filteredOrders.map(order => ({
+        ...order,
+        pharmacy: users.find(item => item.wallet.toLowerCase() === order.pharmacy?.toLowerCase())?.name || order.pharmacy,
+        distributor: users.find(item => item.wallet.toLowerCase() === order.distributor?.toLowerCase())?.name || order.distributor,
       }));
-      setGridOptions({ ...gridOptions, rowData: data });
+      setGridOptions({ ...gridOptions, rowData: ordersdata });
     }
     fetchOrders();
   
