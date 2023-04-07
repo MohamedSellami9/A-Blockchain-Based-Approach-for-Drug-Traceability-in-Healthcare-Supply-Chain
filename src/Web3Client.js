@@ -454,6 +454,7 @@ export const getAllListedDrugs = async () => {
         description: drug.description,
         price: drug.price ,
 		manufacturer: drug.manufacturer ,
+		pharmacy : drug.pharmacy,
 		ownerId: drug.ownerId,
 		tempC : drug.tempC,
 		quantity : drug.quantity,

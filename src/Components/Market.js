@@ -32,7 +32,7 @@ function Market() {
      const finaldrugs=filteredDrugs.map(drug => ({
       ...drug,
       manufacturer: users.find(item => item.wallet.toLowerCase() === drug.manufacturer.toLowerCase())?.name || drug.manufacturer,
-      pharmacy: users.find(item => item.wallet.toLowerCase() === drug.ownerId?.toLowerCase())?.name || drug.pharmacy,
+      pharmacy: users.find(item => item.wallet.toLowerCase() === drug.pharmacy?.toLowerCase())?.name || drug.pharmacy,
      }));
       setDrugsListed(finaldrugs);
     };
@@ -62,14 +62,21 @@ function Market() {
           font.encodeText('UTF-8');
                           
           // Add text to the page
+          const dataa = await getDocs(usersCollectionRef);
+          const  users=dataa.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+          const ManuName = users.find(item => item.wallet.toLowerCase() === Drug.manufacturer.toLowerCase())?.name || Drug.manufacturer;
+          const PharmName= users.find(item => item.wallet.toLowerCase() === Drug.pharmacy?.toLowerCase())?.name || Drug.pharmacy;
+          const DistributorName= users.find(item => item.wallet.toLowerCase() === Drug.distributor?.toLowerCase())?.name || Drug.distributor;
+
           const fontSize = 12;
           const headerText = `Drug Invoice for Order ID: ${row.id}`;
           const headerTextWidth = font.widthOfTextAtSize(headerText, fontSize);
           const headerTextHeight = font.heightAtSize(fontSize);
           const drugText = `Drug Name: ${Drug.name} Price: ${Drug.price}`;
-          const drugText1 = `Manufacturer: ${Drug.manufacturer}`;
-          const drugText2=`Pharmacy: ${Drug.ownerID}`;
+          const drugText1 = `Manufacturer: ${ManuName}`;
+          const drugText2=`Pharmacy: ${PharmName}`;
           const drugText3 = `Creation Date: ${Drug.date}` ;
+          const drugText4=`Distributor: ${DistributorName}`;
           const drugTextLines = drugText.split('\n');
           const drugTextWidth = font.widthOfTextAtSize(drugText, fontSize);
           const drugTextHeight = font.heightAtSize(fontSize);
@@ -89,14 +96,14 @@ function Market() {
           });
           page.drawText(drugText1, {
             x:  drugTextWidth / 2,
-            y: page.getHeight() / 2 - drugTextHeight / 2-20,
+            y: page.getHeight() / 2 - drugTextHeight / 2-10,
             size: fontSize,
             font: font,
             color: rgb(0, 0, 0),
           });
           page.drawText(drugText2, {
             x:  drugTextWidth / 2,
-            y: page.getHeight() / 2 - drugTextHeight / 2 -40,
+            y: page.getHeight() / 2 - drugTextHeight / 2 -20,
             size: fontSize,
             font: font,
             color: rgb(0, 0, 0),
@@ -108,26 +115,26 @@ function Market() {
             font: font,
             color: rgb(0, 0, 0),
           });
+          page.drawText(drugText4, {
+            x:  drugTextWidth / 2,
+            y: page.getHeight() / 2 - drugTextHeight / 2-40,
+            size: fontSize,
+            font: font,
+            color: rgb(0, 0, 0),
+          });
                 
-          // Get the PDF document as a blob
           const pdfBytes = await pdfDoc.save();
                 
-          // Convert the blob to a data URL
           const pdfUrl = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
                 
-          // Open a new window with the PDF document
           const printWindow = window.open(pdfUrl);
                 
-          // Wait for the print window to load
           printWindow.onload = () => {
-            // Print the document
             printWindow.print();
                 
-            // Revoke the data URL to free up memory
             URL.revokeObjectURL(pdfUrl);
           };
                 
-          // Refresh the UI grid
           gridRef.current.api.refreshCells({ rowNodes: [row] });
         }
         
@@ -138,7 +145,7 @@ function Market() {
     { field: 'description', headerName: 'Description', width: 250 },
     { field: 'price', headerName: 'Price', width: 120,},
     {field:'manufacturer',headerName: 'Manufacturer', width:200},
-    {field:'ownerID',headerName: 'Pharmacy', width:200},
+    {field:'pharmacy',headerName: 'Pharmacy', width:200},
     {field:'quantity',headerName: 'Q', width:90},
     {field:'tempC',headerName: 'T°', width:90,},
     {field:'date',headerName: 'date', width:200},
