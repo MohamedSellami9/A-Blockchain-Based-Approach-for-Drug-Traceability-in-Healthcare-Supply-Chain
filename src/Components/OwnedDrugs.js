@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
-import { listDrug,getAllDeliveredDrugs,priceChanger, selectedAccount, subscribeToDrugAdded,getDrug } from '../Web3Client.js';
+import { listDrug,getAllDeliveredListedDrugs,priceChanger, unlistDrug, isListed,getDrug } from '../Web3Client.js';
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community";
 import '../App.css';
@@ -19,11 +19,12 @@ function OwnedDrug(props) {
   const [drugsDelivered, setDrugsDelivered] = useState([]);
   const [selectedDrugs, setSelectedDrugs] = useState([]);
   const [quantity, setQuantity] = useState('');
+  const [isListed, setIsListed] = useState(false);
   const gridRef = useRef();
   const usersCollectionRef = collection(db, "users")
   useEffect(() => {
     const fetchDrugs = async () => {
-      const drugs = await getAllDeliveredDrugs();
+      const drugs = await getAllDeliveredListedDrugs();
       const filteredDrugs = drugs.filter(order => order.manufacturer !== "0x0000000000000000000000000000000000000000");
       const dataa = await getDocs(usersCollectionRef);
       const  users=dataa.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
@@ -72,13 +73,32 @@ function OwnedDrug(props) {
       priceChanger(node.data.id, newValue);
     }
   };
-  const actionsRenderer = useCallback((props) => {
+  const actionsRenderer = useCallback((props) => {  
+    
+    const handleListClick = () => {
+      listDrug(props.data.id);
+      setIsListed(true);
+      gridRef.current.api.applyTransaction({ update: [props.data] });
+    };
+    
+    const handleUnlistClick = () => {
+      unlistDrug(props.data.id);
+      setIsListed(false);
+      gridRef.current.api.applyTransaction({ update: [props.data] });
+    };
+    
     return (
-        <div style={{ marginBottom:'10px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-      <Button variant="success" size="sm" onClick={() => props.onClick(props.data)}>List</Button>
-    </div>
+      <div style={{ marginBottom:'10px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                  <Button variant="success" size="sm" onClick={handleListClick}>List</Button>
+          <Button variant="danger" size="sm" onClick={handleUnlistClick}>Unlist</Button>
+
+
+
+      </div>
     );
   }, []);
+  
+  
   
   const onGridReady = useCallback(params => {
     gridRef.current = params;

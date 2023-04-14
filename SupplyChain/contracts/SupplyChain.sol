@@ -82,6 +82,16 @@ function getAllDeliveredDrugs(address ad) public view returns (Drug[] memory){
     }
     return drugsDelivered;
 }
+function getAllDeliveredListedDrugs(address ad) public view returns (Drug[] memory){
+        Drug[] memory drugsDelivered = new Drug[](drugsNumber);
+    uint j=0;
+    for (uint i = 0; i < drugsNumber; i++) {    
+        if (((drugs[i].Status == Status.Listed)||(drugs[i].Status == Status.Delivered)||(drugs[i].Status == Status.Created)||(drugs[i].Status == Status.Sold))&&(drugs[i].price != 0)&&(drugs[i].quantity != 0)&&(ad==drugs[i].ownerID)){
+        drugsDelivered[j] = drugs[i];
+         j++;}
+    }
+    return drugsDelivered;
+}
 function getAllOrders(address ad) public view returns (Order[] memory) {
     Order[] memory OrdersAvailable = new Order[](orderNumber);
     uint j=0;
@@ -245,6 +255,19 @@ event OrderAdded(
     }
     function listDrugs(uint index) public{
         drugs[index].Status = Status.Listed;
+    }
+    modifier unlistCond(uint _Index){
+    require(drugs[_Index].Status == Status.Listed);
+     _;
+    }
+    function unlistDrug(uint index) unlistCond(index) public{
+        drugs[index].Status = Status.Delivered;
+    }
+    function isListed(uint index) public view returns(bool){
+        if (drugs[index].Status == Status.Listed){
+            return true;
+        }
+        return false;
     }
 function setDistributor(uint orderId) public  {
     require(orders[orderId].Status == OrderStatus.Accepted, "Order has not been placed yet");

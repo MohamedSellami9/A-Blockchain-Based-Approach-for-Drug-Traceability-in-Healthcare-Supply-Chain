@@ -273,6 +273,26 @@ export const listDrug = async (id) => {
 		.send({ from: selectedAccount });
 	return result;
 };
+export const unlistDrug = async (id) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   const result = await supplyContract.methods
+	   .unlistDrug(id)
+		.send({ from: selectedAccount });
+	return result;
+};
+export const isListed = async (id) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   const result = await supplyContract.methods
+	   .isListed(id)
+		.call();
+	return result;
+};
 
 export const orderStatus = async (id) => {
 	if (!isInitialized) {
@@ -488,5 +508,26 @@ export const getAllDeliveredDrugs = async () => {
 };
 
 
+export const getAllDeliveredListedDrugs = async () => {
+    if (!isInitialized) {
+        await init();
+    }
 
+    const drugsAvailable = await supplyContract.methods.getAllDeliveredListedDrugs(selectedAccount).call();
+    const drugsAvailableObj = drugsAvailable.map((drug) => ({
+        id: drug.id,
+        name: drug.name,
+        description: drug.description,	
+        price: drug.price ,
+		manufacturer: drug.manufacturer ,
+		ownerId: drug.ownerId,
+		pharmacy :drug.pharmacy,
+		distributor :drug.distributor,
+		tempC : drug.tempC,
+		quantity : drug.quantity,
+		date: drug.date
+
+	  }));
+    return drugsAvailableObj;
+};
  
