@@ -2,12 +2,7 @@ import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react';
 import Button from 'react-bootstrap/Button';
 import { getOrdersAvailable, Accept , Decline ,orderStatus,subscribeToAcceptOrder} from '../Web3Client';
-import {
-  collection,
-  getDocs,
-  doc,
-  setDoc, query, where
-} from "firebase/firestore";
+import {collection,getDocs,doc,setDoc, query, where} from "firebase/firestore";
 import { auth,db } from "../firebase-config";
 
 function OrderGrid({}) {

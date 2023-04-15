@@ -294,6 +294,46 @@ export const isListed = async (id) => {
 	return result;
 };
 
+export const isOrderAccepted = async (id) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   const result = await supplyContract.methods
+	   .isOrderAccepted(id)
+		.call();
+	return result;
+};
+export const isOrderDeclined = async (id) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   const result = await supplyContract.methods
+	   .isOrderDeclined(id)
+		.call();
+	return result;
+};
+export const isOrderDelivering = async (id) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   const result = await supplyContract.methods
+	   .isOrderDelivering(id)
+		.call();
+	return result;
+};
+export const isOrderOrdered = async (id) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   const result = await supplyContract.methods
+	   .isOrderOrdered(id)
+		.call();
+	return result;
+};
 export const orderStatus = async (id) => {
 	if (!isInitialized) {
 		await init();
@@ -445,6 +485,17 @@ export const getAllOrdersAcceptedassigned = async () => {
 	  }));
     return orderssAvailableObj;
 };
+export const getAllOrdersAcceptedDeclinedDel = async () => {
+    if (!isInitialized) {
+        await init();
+    }
+
+    const ordersAvailable = await supplyContract.methods.getAllOrdersAcceptedDeclinedDel(selectedAccount).call();
+    const orderssAvailableObj = ordersAvailable.map((order) => ({
+		...order
+	  }));
+    return orderssAvailableObj;
+};
 export function subscribeToAcceptOrder(callback) {
 	if (supplyContract) {
 	  supplyContract.events.OrderAccepted()
@@ -530,4 +581,3 @@ export const getAllDeliveredListedDrugs = async () => {
 	  }));
     return drugsAvailableObj;
 };
- 

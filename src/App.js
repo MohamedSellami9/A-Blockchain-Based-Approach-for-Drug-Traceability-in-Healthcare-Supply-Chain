@@ -11,6 +11,7 @@ import OrderDrug from './Components/OrderDrug';
 import OrderGrid from './Components/OrderGrid';
 import OwnedDrugs from './Components/OwnedDrugs';
 import Market from './Components/Market';
+import OrdersStat from './Components/OrdersStat';
 import Roles from './Components/Roles';
 import {signOut} from "firebase/auth";
 import { auth,db } from "./firebase-config";
@@ -135,6 +136,7 @@ function App() {
 			{/* ONLY PHARMACY */}
 			<Route element={<RequireAuth role={role}  allowedRoles={["admin", "pharmacy"]} />}>
 			<Route path="order" element={<OrderDrug/>}/>
+			<Route path="orderstatus" element={<OrdersStat/>}/>
 			</Route>
 			{/* ONLY CLIENT */}
 			<Route element={<RequireAuth role={role}  allowedRoles={["admin", "client"]} />}>

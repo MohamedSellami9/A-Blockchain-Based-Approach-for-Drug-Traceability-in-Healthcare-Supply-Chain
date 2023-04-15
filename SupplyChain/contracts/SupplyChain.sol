@@ -6,7 +6,7 @@ import './roles/Manufacturer.sol';
 import './roles/Pharmacy.sol';
 
 contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
-    enum OrderStatus {Ordered ,Accepted , Declined, Completed}
+    enum OrderStatus {Ordered ,Accepted , Declined, Delivering,Completed}
     enum Status {Created  ,Ordered , Delivering , Delivered,Listed, Sold }
     mapping(uint => Drug) public drugs; 
     uint public drugsNumber=0;  
@@ -72,16 +72,7 @@ function getAllListedDrugs() public view returns (Drug[] memory){
     }
     return drugsListed;
 }
-function getAllDeliveredDrugs(address ad) public view returns (Drug[] memory){
-        Drug[] memory drugsDelivered = new Drug[](drugsNumber);
-    uint j=0;
-    for (uint i = 0; i < drugsNumber; i++) {    
-        if (((drugs[i].Status == Status.Delivered)||(drugs[i].Status == Status.Created)||(drugs[i].Status == Status.Sold))&&(drugs[i].price != 0)&&(drugs[i].quantity != 0)&&(ad==drugs[i].ownerID)){
-        drugsDelivered[j] = drugs[i];
-         j++;}
-    }
-    return drugsDelivered;
-}
+
 function getAllDeliveredListedDrugs(address ad) public view returns (Drug[] memory){
         Drug[] memory drugsDelivered = new Drug[](drugsNumber);
     uint j=0;
@@ -108,6 +99,16 @@ function getAllOrdersAccepted(address ad) public view returns (Order[] memory) {
     uint j=0;
     for (uint i = 0; i < orderNumber; i++ ) {    
         if ((orders[i].Status == OrderStatus.Accepted)&&(orders[i].distributor==ad)){
+        OrdersAvailable[j] = orders[i];
+         j++;}
+    }
+    return OrdersAvailable;
+}
+function getAllOrdersAcceptedDeclinedDel(address ad) public view returns (Order[] memory) {
+    Order[] memory OrdersAvailable = new Order[](orderNumber);
+    uint j=0;
+    for (uint i = 0; i < orderNumber; i++ ) {    
+        if (((orders[i].Status == OrderStatus.Accepted)||(orders[i].Status == OrderStatus.Ordered)||(orders[i].Status == OrderStatus.Declined)||(orders[i].Status == OrderStatus.Delivering))&&(orders[i].pharmacy==ad)){
         OrdersAvailable[j] = orders[i];
          j++;}
     }
@@ -194,6 +195,7 @@ event OrderAdded(
         orders[orderNumber]= order;
         orderNumber++;
         drugs[index].Status = Status.Ordered;
+        orders[orderNumber].Status = OrderStatus.Ordered;
         emit OrderAdded(order.id, order.drugIndex, order.pharmacy, order.distributor);
         return order;
     }
@@ -215,6 +217,7 @@ event OrderAdded(
             orders[orderIndex].Status=OrderStatus.Accepted;
             drugs[drug2.id].ownerID= orders[orderIndex].pharmacy;
             drugs[drug2.id].pharmacy= orders[orderIndex].pharmacy;
+            orders[orderIndex].manufacturer = drugs[orders[orderIndex].drugIndex].manufacturer;
         }
         else if(n==0){
             orders[orderIndex].Status = OrderStatus.Accepted;
@@ -234,6 +237,7 @@ event OrderAdded(
         uint index = orders[orderIndex].drugIndex;
         drugs[index].Status = Status.Delivering;
         drugs[index].distributor = orders[orderIndex].distributor;
+        orders[orderIndex].Status=OrderStatus.Delivering;
 
 
     }
@@ -269,6 +273,31 @@ event OrderAdded(
         }
         return false;
     }
+    function isOrderAccepted(uint index) public view returns(bool){
+        if (orders[index].Status == OrderStatus.Accepted){
+            return true;
+        }
+        return false;
+    }
+    function isOrderOrdered(uint index) public view returns(bool){
+        if (orders[index].Status == OrderStatus.Ordered){
+            return true;
+        }
+        return false;
+    }
+    function isOrderDeclined(uint index) public view returns(bool){
+        if (orders[index].Status == OrderStatus.Declined){
+            return true;
+        }
+        return false;
+    }
+    function isOrderDelivering(uint index) public view returns(bool){
+        if (orders[index].Status == OrderStatus.Delivering){
+            return true;
+        }
+        return false;
+    }
+    
 function setDistributor(uint orderId) public  {
     require(orders[orderId].Status == OrderStatus.Accepted, "Order has not been placed yet");
     orders[orderId].distributor = msg.sender;

@@ -23,7 +23,10 @@ const Sidebar = (props) => {
               </>
             }
             {(props.role === "pharmacy" || props.role === "admin") &&
+            <>
               <Nav.Link as={Link} to="/order">Order Drug</Nav.Link>
+              <Nav.Link as={Link} to="/orderstatus">Orders Status</Nav.Link>
+              </>
             }
             {(props.role === "distributor" || props.role === "admin") &&
               <>
