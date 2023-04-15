@@ -53,11 +53,6 @@ function AssignDistributor({}) {
       setGridOptions({ ...gridOptions, rowData: orderdata });
     }
     fetchOrders();
-    const unsubscribe = subscribeToAcceptOrder(() => {
-      fetchOrders();
-    });
-
-    return unsubscribe;
   }, []);
   const rowData = ordersAvailable?.map(order => ({
     id: order.id,

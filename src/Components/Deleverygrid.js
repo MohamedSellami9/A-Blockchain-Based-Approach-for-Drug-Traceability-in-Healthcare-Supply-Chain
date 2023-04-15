@@ -74,7 +74,6 @@ function Deleverygrid({}) {
     console.log(props.data)
     return (
     <div style={{ marginBottom:'10px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-      {/* <Button variant="success" disabled={props.data.drugStatus==2} size="sm" onClick={() => {props.onStart(props.data);}}>start Delivering</Button> */}
       <Button variant="success"  size="sm" onClick={() => {props.onEnd(props.data);}}>end Delivering</Button>
     </div>
     );

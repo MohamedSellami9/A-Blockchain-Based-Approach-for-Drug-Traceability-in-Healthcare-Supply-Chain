@@ -49,25 +49,16 @@ function Market() {
           console.log("Accepted order:", row);
           const drugInfo = await buyDrug(row.id);
           const Drug = await getDrug(row.id)
-          console.log(row.id);
-                
-          // Create a new PDF document
+          console.log(row.id);     
           const pdfDoc = await PDFDocument.create();
-                
-          // Add a new page to the document
           const page = pdfDoc.addPage();
-                
-          // Get the font used for text
           const font = await pdfDoc.embedFont(StandardFonts.Helvetica, { subset: true });
           font.encodeText('UTF-8');
-                          
-          // Add text to the page
           const dataa = await getDocs(usersCollectionRef);
           const  users=dataa.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
           const ManuName = users.find(item => item.wallet.toLowerCase() === Drug.manufacturer.toLowerCase())?.name || Drug.manufacturer;
           const PharmName= users.find(item => item.wallet.toLowerCase() === Drug.pharmacy?.toLowerCase())?.name || Drug.pharmacy;
           const DistributorName= users.find(item => item.wallet.toLowerCase() === Drug.distributor?.toLowerCase())?.name || Drug.distributor;
-
           const fontSize = 12;
           const headerText = `Drug Invoice for Order ID: ${row.id}`;
           const headerTextWidth = font.widthOfTextAtSize(headerText, fontSize);
@@ -121,20 +112,14 @@ function Market() {
             size: fontSize,
             font: font,
             color: rgb(0, 0, 0),
-          });
-                
+          });       
           const pdfBytes = await pdfDoc.save();
-                
           const pdfUrl = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
-                
           const printWindow = window.open(pdfUrl);
-                
           printWindow.onload = () => {
             printWindow.print();
-                
             URL.revokeObjectURL(pdfUrl);
-          };
-                
+          };    
           gridRef.current.api.refreshCells({ rowNodes: [row] });
         }
         

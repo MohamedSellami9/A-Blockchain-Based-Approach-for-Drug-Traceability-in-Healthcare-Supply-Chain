@@ -1,16 +1,12 @@
-import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
+import React, { useCallback,  useRef, useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import { Form } from 'react-bootstrap';
-import InputGroup from 'react-bootstrap/InputGroup';
-import { order,getDrugsAvailable, selectedAccount, subscribeToDrugAdded,getDrug } from '../Web3Client.js';
+import { order,getDrugsAvailable, subscribeToDrugAdded } from '../Web3Client.js';
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community";
 import '../App.css';
 import {
-  collection,
-  getDocs,
-  doc,
-  setDoc, query, where
+  collection,getDocs,
 } from "firebase/firestore";
 import { auth,db } from "../firebase-config";
 
