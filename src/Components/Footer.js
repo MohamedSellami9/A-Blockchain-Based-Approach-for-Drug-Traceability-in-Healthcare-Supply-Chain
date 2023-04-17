@@ -34,9 +34,8 @@ function Footer() {
           <div className="col-lg-4 col-md-6">
             <h3>About Us</h3>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse cursus fermentum risus, vitae
-              consectetur dolor rutrum ac. Ut consectetur interdum urna sit amet varius. Nam sodales ipsum ac enim
-              consectetur feugiat.
+            taking on the conception and development of a distributed and decentralized healthcare supply 
+            management system focusing specifically on drug traceability, using the Blockchain technology. 
             </p>
           </div>
           <div className="col-lg-2 col-md-6">

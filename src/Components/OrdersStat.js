@@ -45,7 +45,8 @@ function OrdersStat({}) {
         })();
         return {
           ...order,
-          pharmacy: users.find(item => item.wallet.toLowerCase() === order.pharmacy?.toLowerCase())?.name || order.pharmacy,
+          manufacturer: users.find(item => item.wallet.toLowerCase() === order.manufacturer?.toLowerCase())?.name || order.manufacturer,
+          distributor: users.find(item => item.wallet.toLowerCase() === order.distributor?.toLowerCase())?.name || order.distributor,
           status: status,
         };
       }));
