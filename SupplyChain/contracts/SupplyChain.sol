@@ -1,20 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-import './roles/Client.sol';
-import './roles/Distributor.sol';
-import './roles/Manufacturer.sol';
-import './roles/Pharmacy.sol';
-
-contract SupplyChain is Client,Distributor,Manufacturer,Pharmacy{
+contract SupplyChain {
     enum OrderStatus {Ordered ,Accepted , Declined, Delivering,Completed}
-    enum Status {Created  ,Ordered , Delivering , Delivered,Listed, Sold }
+    enum Status {Created ,ListedLot ,Ordered , Delivering , Delivered,Listed, Sold }
     mapping(uint => Drug) public drugs; 
     uint public drugsNumber=0;  
- 
-
     mapping(uint => Order) public orders; 
     uint public orderNumber=0;   
- 
     struct Drug {
         uint id ;
         string name;
@@ -56,7 +48,7 @@ function getAllDrug() public view returns (Drug[] memory) {
     Drug[] memory drugsAvailable = new Drug[](drugsNumber);
     uint j=0;
     for (uint i = 0; i < drugsNumber; i++) {    
-        if ((drugs[i].Status == Status.Created)&&(drugs[i].price != 0)){
+        if ((drugs[i].Status == Status.ListedLot)&&(drugs[i].price != 0)){
         drugsAvailable[j] = drugs[i];
          j++;}
     }
@@ -77,7 +69,7 @@ function getAllDeliveredListedDrugs(address ad) public view returns (Drug[] memo
         Drug[] memory drugsDelivered = new Drug[](drugsNumber);
     uint j=0;
     for (uint i = 0; i < drugsNumber; i++) {    
-        if (((drugs[i].Status == Status.Listed)||(drugs[i].Status == Status.Delivered)||(drugs[i].Status == Status.Created)||(drugs[i].Status == Status.Sold))&&(drugs[i].price != 0)&&(drugs[i].quantity != 0)&&(ad==drugs[i].ownerID)){
+        if (((drugs[i].Status == Status.Listed)||(drugs[i].Status == Status.ListedLot)||(drugs[i].Status == Status.Delivered)||(drugs[i].Status == Status.Created)||(drugs[i].Status == Status.Sold))&&(drugs[i].price != 0)&&(drugs[i].quantity != 0)&&(ad==drugs[i].ownerID)){
         drugsDelivered[j] = drugs[i];
          j++;}
     }
@@ -207,7 +199,7 @@ event OrderAdded(
         int n = drugs[orders[orderIndex].drugIndex].quantity-orders[orderIndex].quantity;
         if (n>0){
             drugs[orders[orderIndex].drugIndex].quantity-=orders[orderIndex].quantity;
-            drugs[orders[orderIndex].drugIndex].Status=Status.Created;
+            drugs[orders[orderIndex].drugIndex].Status=Status.ListedLot;
             Drug memory drug2 =drugCreate(drugs[orders[orderIndex].drugIndex].name,drugs[orders[orderIndex].drugIndex].description,drugs[orders[orderIndex].drugIndex].price,drugs[orders[orderIndex].drugIndex].tempC,orders[orderIndex].quantity,drugs[orders[orderIndex].drugIndex].date);
             drug2.manufacturer=drugs[orders[orderIndex].drugIndex].manufacturer;
             drug2.Status=Status.Ordered;
@@ -224,12 +216,13 @@ event OrderAdded(
             drugs[orders[orderIndex].drugIndex].pharmacy= orders[orderIndex].pharmacy;
         }
         else {
-            drugs[orders[orderIndex].drugIndex].Status=Status.Created;
+            drugs[orders[orderIndex].drugIndex].Status=Status.ListedLot;
             orders[orderIndex].Status = OrderStatus.Declined;
         }
         emit OrderAccepted(orderIndex);
     }
     function DeclineOrder(uint orderIndex) public AcceptCond(orderIndex) {
+    drugs[orders[orderIndex].drugIndex].Status=Status.ListedLot;
     orders[orderIndex].Status = OrderStatus.Declined;
     }
     function startDeliverdrug(uint orderIndex) public DeliveringCond(orderIndex) {
@@ -260,12 +253,22 @@ event OrderAdded(
     function listDrugs(uint index) public{
         drugs[index].Status = Status.Listed;
     }
+    function listDrugLot(uint index) public{
+        drugs[index].Status = Status.ListedLot;
+    }
     modifier unlistCond(uint _Index){
     require(drugs[_Index].Status == Status.Listed);
      _;
     }
+    modifier unlistLotCond(uint _Index){
+    require(drugs[_Index].Status == Status.ListedLot);
+     _;
+    }
     function unlistDrug(uint index) unlistCond(index) public{
         drugs[index].Status = Status.Delivered;
+    }
+    function unlistDrugLot(uint index) unlistLotCond(index) public{
+        drugs[index].Status = Status.Created;
     }
     function isListed(uint index) public view returns(bool){
         if (drugs[index].Status == Status.Listed){

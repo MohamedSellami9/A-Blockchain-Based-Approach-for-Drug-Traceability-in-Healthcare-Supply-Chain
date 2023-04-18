@@ -12,11 +12,6 @@
   text-align: center;
 }
 
-.ag-row {
-  &:hover {
-    background-color: #f0f0f0;
-  }
-}
 
 .actionsRenderer {
   display: flex;
@@ -25,7 +20,4 @@
   height: 100%;
   margin-bottom: 10px;
 
-  button {
-    margin: 0 5px;
-  }
 }

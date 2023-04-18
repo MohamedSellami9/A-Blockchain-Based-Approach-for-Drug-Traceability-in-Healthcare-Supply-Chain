@@ -273,6 +273,16 @@ export const listDrug = async (id) => {
 		.send({ from: selectedAccount });
 	return result;
 };
+export const listDrugLot = async (id) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   const result = await supplyContract.methods
+	   .listDrugLot(id)
+		.send({ from: selectedAccount });
+	return result;
+};
 export const unlistDrug = async (id) => {
 	if (!isInitialized) {
 		await init();
@@ -280,6 +290,16 @@ export const unlistDrug = async (id) => {
 
    const result = await supplyContract.methods
 	   .unlistDrug(id)
+		.send({ from: selectedAccount });
+	return result;
+};
+export const unlistDrugLot = async (id) => {
+	if (!isInitialized) {
+		await init();
+	}
+
+   const result = await supplyContract.methods
+	   .unlistDrugLot(id)
 		.send({ from: selectedAccount });
 	return result;
 };

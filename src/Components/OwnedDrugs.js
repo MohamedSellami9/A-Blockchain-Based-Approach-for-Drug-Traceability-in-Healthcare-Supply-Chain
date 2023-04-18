@@ -1,8 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import { listDrug,getAllDeliveredListedDrugs,priceChanger, unlistDrug, isListed,getDrug } from '../Web3Client.js';
+import { listDrug,getAllDeliveredListedDrugs,priceChanger, unlistDrug, unlistDrugLot,listDrugLot } from '../Web3Client.js';
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community";
 import '../App.css';
@@ -55,6 +53,21 @@ function OwnedDrug(props) {
       },
       hide: !((props.role === "admin")||(props.role === "pharmacy"))
     },
+    {
+      headerName: 'ListLot',
+      width: 120,
+      cellRenderer: 'actionsRenderer2',
+      cellRendererParams: {
+        onClick2: async (row) => {
+          console.log("Accepted order:", row);
+          const List = await listDrugLot(row.id);
+          console.log(console.log(row.id));
+          console.log(row.id);
+          gridRef.current.api.applyTransaction({ remove: [row] });
+        }
+      },
+      hide: !((props.role === "admin")||(props.role === "Manufacturer"))
+    },
     { field: 'id', headerName: 'ID', width: 90 },
     { field: 'name', headerName: 'Name', width: 150 },
     { field: 'description', headerName: 'Description', width: 250 },
@@ -91,9 +104,25 @@ function OwnedDrug(props) {
       <div style={{ marginBottom:'10px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                   <Button variant="success" size="sm" onClick={handleListClick}>List</Button>
           <Button variant="danger" size="sm" onClick={handleUnlistClick}>Unlist</Button>
-
-
-
+      </div>
+    );
+  }, []);
+  const actionsRenderer2 = useCallback((props) => {  
+    
+    const handleListClick = () => {
+      listDrugLot(props.data.id);
+      gridRef.current.api.applyTransaction({ update: [props.data] });
+    };
+    
+    const handleUnlistClick = () => {
+      unlistDrugLot(props.data.id);
+      gridRef.current.api.applyTransaction({ update: [props.data] });
+    };
+    
+    return (
+      <div style={{ marginBottom:'10px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                  <Button variant="success" size="sm" onClick={handleListClick}>ListLot</Button>
+          <Button variant="danger" size="sm" onClick={handleUnlistClick}>Unlistlot</Button>
       </div>
     );
   }, []);
@@ -110,14 +139,14 @@ function OwnedDrug(props) {
       <div>
       <div
         className="ag-theme-material"
-        style={{margin:'23%', marginTop:'10px',marginBottom:'10px' , height: '500px', width: '60%' }}
+        style={{margin:'5%', marginTop:'10px',marginBottom:'10px' , height: '500px', width: '90%' }}
       >
         <AgGridReact
           columnDefs={columnDefs}
           rowData={drugsDelivered}
           rowSelection="multiple"
           onCellValueChanged={onCellValueChanged}
-          frameworkComponents={{ actionsRenderer }}
+          frameworkComponents={{ actionsRenderer,actionsRenderer2 }}
           onGridReady={onGridReady}
         />
         </div>
