@@ -80,3 +80,9 @@
     z-index: 9999;
     
   }
+  img{
+    height: 45px;
+  }
+  img:hover {
+    transform: scale(1.05);
+  }

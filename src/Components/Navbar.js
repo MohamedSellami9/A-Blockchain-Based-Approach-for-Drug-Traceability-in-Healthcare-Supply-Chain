@@ -4,13 +4,13 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import './CSS/Navbar.css';
-
+import logo from './Images/logo.png'
 const Sidebar = (props) => {
 
   return (
     <Navbar expand="lg" className="navbar-dark bg-ligth">
       <Container fluid>
-        <Navbar.Brand as={Link} to="/" className="logo">SupplyChain</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/" className="logo"><img src={logo} alt="logo"/></Navbar.Brand>
         <Navbar.Toggle aria-controls="navbar-nav" />
         <Navbar.Collapse id="navbar-nav">
           <Nav className="navbar-nav me-auto mb-2 mb-lg-0">
