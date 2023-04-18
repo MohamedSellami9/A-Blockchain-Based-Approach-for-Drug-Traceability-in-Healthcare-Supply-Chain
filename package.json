@@ -29,7 +29,7 @@
     "web3": "^1.8.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cross-env GENERATE_SOURCEMAP=false react-scripts start",
     "migrate": "cd ./SupplyChain && truffle migrate --reset",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -52,5 +52,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }
