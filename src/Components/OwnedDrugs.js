@@ -66,7 +66,7 @@ function OwnedDrug(props) {
           gridRef.current.api.applyTransaction({ remove: [row] });
         }
       },
-      hide: !((props.role === "admin")||(props.role === "Manufacturer"))
+      hide: !((props.role === "admin")||(props.role === "manufacturer"))
     },
     { field: 'id', headerName: 'ID', width: 90 },
     { field: 'name', headerName: 'Name', width: 150 },
