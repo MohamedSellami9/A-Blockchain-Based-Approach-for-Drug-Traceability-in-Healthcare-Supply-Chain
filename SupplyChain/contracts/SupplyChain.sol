@@ -90,7 +90,7 @@ function getAllOrdersAccepted(address ad) public view returns (Order[] memory) {
     Order[] memory OrdersAvailable = new Order[](orderNumber);
     uint j=0;
     for (uint i = 0; i < orderNumber; i++ ) {    
-        if ((orders[i].Status == OrderStatus.Accepted)&&(orders[i].Status == OrderStatus.Delivering)&&(orders[i].distributor==ad)){
+        if (((orders[i].Status == OrderStatus.Accepted)||(orders[i].Status == OrderStatus.Delivering))&&(orders[i].distributor==ad)){
         OrdersAvailable[j] = orders[i];
          j++;}
     }
