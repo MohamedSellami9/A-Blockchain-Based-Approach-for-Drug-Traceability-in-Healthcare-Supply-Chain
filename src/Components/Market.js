@@ -7,6 +7,7 @@ import { AgGridReact } from 'ag-grid-react';
 import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import "ag-grid-community";
 import '../App.css';
+import QRCode from 'qrcode';
 import './CSS/Market.css';
 import {
   collection,
@@ -66,6 +67,8 @@ function Market() {
           const drugText = `Drug Name: ${Drug.name} Price: ${Drug.price}`;
           const drugText1 = `Manufacturer: ${ManuName}`;
           const drugText2=`Pharmacy: ${PharmName}`;
+          const qrCodeDataUrl = await QRCode.toDataURL('localhost3000/'+Drug.id);
+          const pngImage = await pdfDoc.embedPng(qrCodeDataUrl);
           const drugText3 = `Creation Date: ${Drug.date}` ;
           const drugText4=`Distributor: ${DistributorName}`;
           const drugTextLines = drugText.split('\n');
@@ -112,7 +115,14 @@ function Market() {
             size: fontSize,
             font: font,
             color: rgb(0, 0, 0),
-          });       
+          });
+          const qrCodeDims = pngImage.scale(0.5);
+          page.drawImage(pngImage, {
+          x: 200,
+          y: 400,
+          width: qrCodeDims.width,
+          height: qrCodeDims.height,
+        });       
           const pdfBytes = await pdfDoc.save();
           const pdfUrl = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
           const printWindow = window.open(pdfUrl);

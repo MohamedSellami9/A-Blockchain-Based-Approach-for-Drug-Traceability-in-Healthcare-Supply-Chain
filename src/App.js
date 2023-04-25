@@ -9,6 +9,7 @@ import Footer from './Components/Footer';
 import CreateDrugForm from './Components/CreateDrugForm';
 import OrderDrug from './Components/OrderDrug';
 import OrderGrid from './Components/OrderGrid';
+import DrugDetails from './Components/DrugDetails';
 import OwnedDrugs from './Components/OwnedDrugs';
 import Market from './Components/Market';
 import OrdersStat from './Components/OrdersStat';
@@ -123,6 +124,7 @@ function App() {
 		   <Route path="assign" element={<AssignDistributor/>} />
 		   <Route path="market" element={<Market/>} />
 		   <Route path="owned" element={<OwnedDrugs role={role} auth={auth} />} />
+		   <Route path="/drug/:id" element={<DrugDetails />} />
 
 
 		   {/* ONLY MANUFACTURER */}
