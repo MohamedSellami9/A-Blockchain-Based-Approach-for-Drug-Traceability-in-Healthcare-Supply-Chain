@@ -53,6 +53,7 @@ function App() {
 		const navigate= useNavigate()	
    const handleLogout = async () => {
     await signOut(auth);
+	setrole(null);
 	navigate('/');
 
     };
