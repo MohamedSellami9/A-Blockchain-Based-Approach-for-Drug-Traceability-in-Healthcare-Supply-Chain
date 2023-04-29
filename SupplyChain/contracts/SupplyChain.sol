@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 contract SupplyChain {
     enum OrderStatus {Ordered ,Accepted , Declined, Delivering,Completed}
-    enum Status {Created ,ListedLot ,Ordered , Delivering , Delivered,Listed, Sold }
+    enum Status {Created ,ListedLot ,Ordered , Delivering,Received , Delivered,Listed, Sold }
     mapping(uint => Drug) public drugs; 
     uint public drugsNumber=0;  
     mapping(uint => Order) public orders; 
@@ -74,7 +74,7 @@ function getAllDeliveredListedDrugs(address ad) public view returns (Drug[] memo
         Drug[] memory drugsDelivered = new Drug[](drugsNumber);
     uint j=0;
     for (uint i = 0; i < drugsNumber; i++) {    
-        if (((drugs[i].Status == Status.Listed)||(drugs[i].Status == Status.ListedLot)||(drugs[i].Status == Status.Delivered)||(drugs[i].Status == Status.Created)||(drugs[i].Status == Status.Sold))&&(drugs[i].price != 0)&&(drugs[i].quantity != 0)&&(ad==drugs[i].ownerID)){
+        if (((drugs[i].Status == Status.Listed)||(drugs[i].Status == Status.Received)||(drugs[i].Status == Status.ListedLot)||(drugs[i].Status == Status.Delivered)||(drugs[i].Status == Status.Created)||(drugs[i].Status == Status.Sold))&&(drugs[i].price != 0)&&(drugs[i].quantity != 0)&&(ad==drugs[i].ownerID)){
         drugsDelivered[j] = drugs[i];
          j++;}
     }
@@ -151,7 +151,6 @@ event DrugAdded(uint indexed id, string name, string description, address indexe
 
 function drugCreate(string memory name,string memory description,string memory dosageInformation,string memory activeIngredients,string memory adverseReactions,string memory instrucForUse,int price,int tempC,int quantity,string memory expdate,
     string memory date) public payable nameDrug(name, description) returns (Drug memory) {
-    require(msg.value <= 0.01 ether, "Payment amount is insufficient.");
     Drug memory drug = Drug({
         id: drugsNumber,
         name: name,
@@ -185,7 +184,7 @@ event OrderAdded(
   address pharmacy,
   address distributor);
 
-    function orderDrug(uint index , int quantity) public  returns(Order memory) {
+    function orderDrug(uint index , int quantity) public  payable returns(Order memory) {
         Order memory order = Order({
             id : orderNumber ,
             drugIndex : index,
@@ -199,6 +198,8 @@ event OrderAdded(
         orderNumber++;
         drugs[index].Status = Status.Ordered;
         orders[orderNumber].Status = OrderStatus.Ordered;
+        address payable owner = payable(drugs[index].manufacturer);
+        owner.transfer(msg.value);
         emit OrderAdded(order.id, order.drugIndex, order.pharmacy, order.distributor);
         return order;
     }
@@ -244,9 +245,11 @@ event OrderAdded(
         }
         emit OrderAccepted(orderIndex);
     }
-    function DeclineOrder(uint orderIndex) public AcceptCond(orderIndex) {
+    function DeclineOrder(uint orderIndex) public payable AcceptCond(orderIndex) {
     drugs[orders[orderIndex].drugIndex].Status=Status.ListedLot;
     orders[orderIndex].Status = OrderStatus.Declined;
+    address payable owner = payable(orders[orderIndex].pharmacy);
+    owner.transfer(msg.value);
     }
     function startDeliverdrug(uint orderIndex) public DeliveringCond(orderIndex) {
         orders[orderIndex].distributor = msg.sender;
@@ -257,13 +260,25 @@ event OrderAdded(
 
 
     }
-    function endDelivering(uint orderIndex) public {
+    modifier orderReceivedCond(uint _Index){
+        require(drugs[_Index].Status == Status.Delivered);
+        _;
+    }
+    function orderReceived(uint Index) payable public orderReceivedCond(Index){
+        drugs[Index].Status=Status.Received;
+        address payable owner = payable(drugs[Index].distributor);
+        owner.transfer(msg.value);
+    }
+
+    function endDelivering(uint orderIndex)  public{
         uint index = orders[orderIndex].drugIndex;
         orders[orderIndex].Status = OrderStatus.Completed;
         drugs[index].Status = Status.Delivered;
         drugs[index].ownerID = orders[orderIndex].pharmacy;
+        orders[orderIndex].Status = OrderStatus.Declined;
     }
-    function buyDrug(uint index) public {
+
+    function buyDrug(uint index) public payable{
         drugs[index].quantity = drugs[index].quantity-1 ;
         Drug memory drug2 = drugCreate(
             drugs[index].name,
@@ -281,12 +296,18 @@ event OrderAdded(
         );
         drugs[drug2.id].Status = Status.Sold;
         drugs[drug2.id].quantity = 1;
+        address payable owner = payable(drugs[drug2.id].pharmacy);
+        owner.transfer((uint256)(msg.value));
         if(drugs[index].quantity==0){
         drugs[index].Status = Status.Sold;
         }
         drugs[drug2.id].ownerID = msg.sender;
     }
-    function listDrugs(uint index) public{
+    modifier listCond(uint _Index){
+    require(drugs[_Index].Status == Status.Received);
+     _;
+    }
+    function listDrugs(uint index) public listCond(index){
         drugs[index].Status = Status.Listed;
     }
     function listDrugLot(uint index) public{
@@ -300,8 +321,9 @@ event OrderAdded(
     require(drugs[_Index].Status == Status.ListedLot);
      _;
     }
+
     function unlistDrug(uint index) unlistCond(index) public{
-        drugs[index].Status = Status.Delivered;
+        drugs[index].Status = Status.Received;
     }
     function unlistDrugLot(uint index) unlistLotCond(index) public{
         drugs[index].Status = Status.Created;

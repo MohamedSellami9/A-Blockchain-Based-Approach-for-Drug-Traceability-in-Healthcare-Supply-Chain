@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
-import { listDrug,getAllDeliveredListedDrugs,priceChanger, unlistDrug, unlistDrugLot,listDrugLot } from '../Web3Client.js';
+import { listDrug,getAllDeliveredReceivedListedDrugs,priceChanger, unlistDrug, unlistDrugLot,listDrugLot,orderReceived } from '../Web3Client.js';
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community";
 import '../App.css';
@@ -22,7 +22,7 @@ function OwnedDrug(props) {
   const usersCollectionRef = collection(db, "users")
   useEffect(() => {
     const fetchDrugs = async () => {
-      const drugs = await getAllDeliveredListedDrugs();
+      const drugs = await getAllDeliveredReceivedListedDrugs();
       const filteredDrugs = drugs.filter(order => order.manufacturer !== "0x0000000000000000000000000000000000000000");
       const dataa = await getDocs(usersCollectionRef);
       const  users=dataa.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
@@ -49,6 +49,21 @@ function OwnedDrug(props) {
           console.log(console.log(row.id));
           console.log(row.id);
           gridRef.current.api.applyTransaction({ remove: [row] });
+        }
+      },
+      hide: !((props.role === "admin")||(props.role === "pharmacy"))
+    },
+    {
+      headerName: 'Received',
+      width: 120,
+      cellRenderer: 'actionsRenderer3',
+      cellRendererParams: {
+        onClick: async (row) => {
+          console.log("Accepted order:", row);
+          const List = await orderReceived(row.id);
+          console.log(console.log(row.id));
+          console.log(row.id);
+        
         }
       },
       hide: !((props.role === "admin")||(props.role === "pharmacy"))
@@ -86,6 +101,13 @@ function OwnedDrug(props) {
       priceChanger(node.data.id, newValue);
     }
   };
+  const actionsRenderer3 = useCallback((props) => {
+    return (
+        <div style={{ marginBottom:'10px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+      <Button variant="success" size="sm" onClick={() => props.onClick(props.data)}>Received</Button>
+    </div>
+    );
+  }, []);
   const actionsRenderer = useCallback((props) => {  
     
     const handleListClick = () => {
@@ -146,7 +168,7 @@ function OwnedDrug(props) {
           rowData={drugsDelivered}
           rowSelection="multiple"
           onCellValueChanged={onCellValueChanged}
-          frameworkComponents={{ actionsRenderer,actionsRenderer2 }}
+          frameworkComponents={{ actionsRenderer,actionsRenderer2 ,actionsRenderer3}}
           onGridReady={onGridReady}
         />
         </div>

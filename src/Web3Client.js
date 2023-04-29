@@ -179,7 +179,7 @@ export const createDrug = async (name, description, dosageInformation, activeIng
 	  .drugCreate(name, description, dosageInformation, activeIngredients, adverseReactions, instrucForUse, price, tempC, quantity, expdate, date)
 	  .send({
 		from: selectedAccount,
-		gas: '5000000',
+		gas: '500000',
 		gasPrice: web3.utils.toWei('20', 'gwei'),
 		value: web3.utils.toWei('0.01', 'ether')
 	  });
@@ -192,10 +192,11 @@ export const buyDrug = async (id) => {
 	if (!isInitialized) {
 	  await init();
 	}
-  
+  const drug = await getDrug(id);
 	const result = await supplyContract.methods
 	  .buyDrug(id)
-	  .send({ from: selectedAccount });
+	  .send({ from: selectedAccount,
+	value: web3.utils.toWei((drug.price/1905).toString(), 'ether')});
 	return result;
   };
 //  export const giveClientRole = async () => {
@@ -209,10 +210,13 @@ export const order = async (id,quantity) => {
 	if (!isInitialized) {
 	  await init();
 	}
-  
+	const order=await getOrder(id);
+	const drug = await getDrug(order.id);
+	
 	const result = await supplyContract.methods
 	  .orderDrug(id,quantity)
-	  .send({ from: selectedAccount });
+	  .send({ from: selectedAccount,
+		value: web3.utils.toWei((drug.price*quantity/1905).toString(), 'ether')});
 	return result;
   };
   export const assignDistributor = async (id) => {
@@ -259,7 +263,17 @@ export const order = async (id,quantity) => {
   
 	return result;
   };
-
+  export const orderReceived = async (id) => {
+	if (!isInitialized) {
+	  await init();
+	}
+	const drug = await getDrug(id);
+	const result = await supplyContract.methods
+	  .orderReceived(id)
+	  .send({ from: selectedAccount ,
+	value : web3.utils.toWei((drug.price*drug.quantity*0.1/1905).toString(), 'ether')});
+	return result;
+  };
   export const Accept = async (id) => {
 	if (!isInitialized) {
 		await init();
@@ -375,10 +389,12 @@ export const Decline = async (id) => {
 	if (!isInitialized) {
 		await init();
 	}
-
+const order = getOrder(id);
+const drug = getDrug(order.drugIndex);
    const result = await supplyContract.methods
 	   .DeclineOrder(id)
-		.send({ from: selectedAccount });
+		.send({ from: selectedAccount ,
+			value: web3.utils.toWei((drug.price*order.quantity/1905).toString(), 'ether')});
 	return result;
 };
 
@@ -739,7 +755,7 @@ export const Facture = async (row,gridRef,usersCollectionRef) => {
 	};    
 	gridRef.current.api.refreshCells({ rowNodes: [row] });
   }
-export const getAllDeliveredListedDrugs = async () => {
+export const getAllDeliveredReceivedListedDrugs = async () => {
     if (!isInitialized) {
         await init();
     }
