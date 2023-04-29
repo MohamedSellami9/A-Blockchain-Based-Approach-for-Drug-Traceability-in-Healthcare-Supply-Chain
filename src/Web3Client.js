@@ -3,7 +3,14 @@ import Web3 from 'web3';
 import ClientContract from 'contracts/Client.json';
 import ManufacturerContract from 'contracts/Manufacturer.json'
 import PhContract from 'contracts/Pharmacy.json'
-
+import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import QRCode from 'qrcode';
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc, query, where
+} from "firebase/firestore";
 const web3 = new Web3('http://localhost:7545'); 
 
 export let selectedAccount;
@@ -572,13 +579,139 @@ export const getAllDeliveredDrugs = async () => {
 		distributor :drug.distributor,
 		tempC : drug.tempC,
 		quantity : drug.quantity,
-		date: drug.date
+		date: drug.date,
+
 
 	  }));
     return drugsAvailableObj;
 };
 
+export const Facture = async (row,gridRef,usersCollectionRef) => {
+	console.log("Accepted order:", row);
+	const Drug = await getDrug(row.id)
+	console.log(row.id);     
+	const pdfDoc = await PDFDocument.create();
+	const page = pdfDoc.addPage();
+	const font = await pdfDoc.embedFont(StandardFonts.Helvetica, { subset: true });
+	font.encodeText('UTF-8');
+	const dataa = await getDocs(usersCollectionRef);
+	const  users=dataa.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+	const ManuName = users.find(item => item.wallet.toLowerCase() === Drug.manufacturer.toLowerCase())?.name || Drug.manufacturer;
+	const PharmName= users.find(item => item.wallet.toLowerCase() === Drug.pharmacy?.toLowerCase())?.name || Drug.pharmacy;
+	const DistributorName= users.find(item => item.wallet.toLowerCase() === Drug.distributor?.toLowerCase())?.name || Drug.distributor;
+	const fontSize = 12;
+	const headerText = `Drug Invoice for Order ID: ${row.id}`;
+	const headerTextWidth = font.widthOfTextAtSize(headerText, fontSize);
+	const headerTextHeight = font.heightAtSize(fontSize);
+	const drugText = `Drug Name: ${Drug.name} Price: ${Drug.price}`;
+	const drugText1 = `Manufacturer: ${ManuName}`;
+	const drugText2=`Pharmacy: ${PharmName}`;
+	const qrCodeDataUrl = await QRCode.toDataURL('localhost3000/'+Drug.id);
+	const pngImage = await pdfDoc.embedPng(qrCodeDataUrl);
+	const drugText3 = `Creation Date: ${Drug.date}` ;
+	const drugText9=`Distributor: ${DistributorName}`;
 
+	const drugText4=`Dosage Information: ${Drug.dosage_information}`;
+	const drugText5=`Active Ingredients: ${Drug.active_ingredients}`;
+	const drugText6=`Instruc For Use: ${Drug.instruc_foruse}`;
+	const drugText7=`Adverse Reactions: ${Drug.adverse_reactions}`;
+	const drugText8=`Expiration date: ${Drug.expdate}`;
+	const drugTextLines = drugText.split('\n');
+	const drugTextWidth = font.widthOfTextAtSize(drugText, fontSize);
+	const drugTextHeight = font.heightAtSize(fontSize);
+	page.drawText(headerText, {
+	  x: page.getWidth() / 2 - headerTextWidth / 2,
+	  y: page.getHeight() - 50,
+	  size: fontSize,
+	  font: font,
+	  color: rgb(0, 0, 0),
+	});
+	page.drawText(drugText, {
+	  x: drugTextWidth / 2,
+	  y: page.getHeight()-255 - drugTextHeight / 2+20,
+	  size: fontSize,
+	  font: font,
+	  color: rgb(0, 0, 0),
+	});
+	page.drawText(drugText1, {
+	  x:  drugTextWidth / 2,
+	  y:  page.getHeight()-255 - drugTextHeight / 2-10,
+	  size: fontSize,
+	  font: font,
+	  color: rgb(0, 0, 0),
+	});
+	page.drawText(drugText2, {
+	  x:  drugTextWidth / 2,
+	  y:  page.getHeight()-255 - drugTextHeight / 2 -40,
+	  size: fontSize,
+	  font: font,
+	  color: rgb(0, 0, 0),
+	});
+	page.drawText(drugText3, {
+	  x:  drugTextWidth / 2,
+	  y:  page.getHeight()-255 - drugTextHeight / 2-70,
+	  size: fontSize,
+	  font: font,
+	  color: rgb(0, 0, 0),
+	});
+	page.drawText(drugText9, {
+		x:  drugTextWidth / 2,
+		y:  page.getHeight()-255 - drugTextHeight / 2-100,
+		size: fontSize,
+		font: font,
+		color: rgb(0, 0, 0),
+	  });
+	page.drawText(drugText4, {
+	  x:  drugTextWidth / 2,
+	  y:  page.getHeight()-255 - drugTextHeight / 2-100,
+	  size: fontSize,
+	  font: font,
+	  color: rgb(0, 0, 0),
+	});
+	page.drawText(drugText5, {
+		x:  drugTextWidth / 2,
+		y:  page.getHeight()-255 - drugTextHeight / 2-130,
+		size: fontSize,
+		font: font,
+		color: rgb(0, 0, 0),
+	  });
+	  page.drawText(drugText6, {
+		x:  drugTextWidth / 2,
+		y:  page.getHeight()-255 - drugTextHeight / 2-160,
+		size: fontSize,
+		font: font,
+		color: rgb(0, 0, 0),
+	  });
+	  page.drawText(drugText7, {
+		x:  drugTextWidth / 2,
+		y:  page.getHeight()-255 - drugTextHeight / 2-190,
+		size: fontSize,
+		font: font,
+		color: rgb(0, 0, 0),
+	  });
+	  page.drawText(drugText8, {
+		x:  drugTextWidth / 2,
+		y:  page.getHeight()-255 - drugTextHeight / 2-220,
+		size: fontSize,
+		font: font,
+		color: rgb(0, 0, 0),
+	  });
+	const qrCodeDims = pngImage.scale(0.5);
+	page.drawImage(pngImage, {
+	x: 500,
+	y:  page.getHeight()-255 - drugTextHeight / 2-390,
+	width: qrCodeDims.width,
+	height: qrCodeDims.height,
+  });       
+	const pdfBytes = await pdfDoc.save();
+	const pdfUrl = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
+	const printWindow = window.open(pdfUrl);
+	printWindow.onload = () => {
+	  printWindow.print();
+	  URL.revokeObjectURL(pdfUrl);
+	};    
+	gridRef.current.api.refreshCells({ rowNodes: [row] });
+  }
 export const getAllDeliveredListedDrugs = async () => {
     if (!isInitialized) {
         await init();

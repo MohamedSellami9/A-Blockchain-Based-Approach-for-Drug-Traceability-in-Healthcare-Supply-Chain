@@ -1,7 +1,7 @@
 import React, { useCallback,  useRef, useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import { Form } from 'react-bootstrap';
-import { order,getDrugsAvailable, subscribeToDrugAdded } from '../Web3Client.js';
+import { order,getDrugsAvailable, subscribeToDrugAdded ,Facture} from '../Web3Client.js';
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community";
 import '../App.css';
@@ -57,6 +57,15 @@ function OrderDrug({ orderr, acceptt, orderd }) {
       checkboxSelection: true,
       width: 50
     },
+    {
+      headerName: 'Details',
+      width: 120,
+      cellRenderer: 'actionsRenderer',
+      cellRendererParams: {
+        onClick: async(row) => {
+        Facture(row,gridRef,usersCollectionRef) ;}
+      }
+    },
     { field: 'id', headerName: 'ID', width: 90 },
     { field: 'name', headerName: 'Name', width: 150 },
     { field: 'description', headerName: 'Description', width: 250 },
@@ -89,6 +98,13 @@ function OrderDrug({ orderr, acceptt, orderd }) {
         selectedRows.length === 1 ? selectedRows[0].athlete : '';
     }
   },);
+  const actionsRenderer = useCallback((props) => {
+    return (
+        <div style={{ marginBottom:'10px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+      <Button variant="success" size="sm" onClick={() => props.onClick(props.data)}>Details</Button>
+    </div>
+    );
+  }, []);
   const handleButtonClick = async () => {
     const selectedRows = gridRef.current.api.getSelectedRows();
     const selectedIds = selectedRows.map(row => row.id);
@@ -126,6 +142,8 @@ function OrderDrug({ orderr, acceptt, orderd }) {
           rowData={drugsAvailable}
           rowSelection="multiple"
           onSelectionChanged={onSelectionChanged}
+          frameworkComponents={{ actionsRenderer }}
+
           onGridReady={onGridReady}
         />
        
