@@ -166,21 +166,21 @@ export const deployPh = async () => {
 
 // 	return rolesInstance.methods.isClient(selectedAccount).call();
 // };
-export const createDrug = async (name, description, price,tempc,quantity,date) => {
+export const createDrug = async (name, description, dosageInformation, activeIngredients, adverseReactions, instrucForUse, price, tempC, quantity, expdate, date) => {
 	await init();
-    const createTx = await supplyContract.methods
-        .drugCreate(name,description,price,tempc,quantity,date)
-        .send({
-            from: selectedAccount,
-            gas: '5000000',
-            gasPrice: web3.utils.toWei('20', 'gwei'),
-        });
-	const num = await supplyContract.methods
-	.getDrugsNumber()
-	 .call();
-	const drug = await supplyContract.methods.drugs(num-1).call();
-    return drug;
-};
+	const createTx = await supplyContract.methods
+	  .drugCreate(name, description, dosageInformation, activeIngredients, adverseReactions, instrucForUse, price, tempC, quantity, expdate, date)
+	  .send({
+		from: selectedAccount,
+		gas: '5000000',
+		gasPrice: web3.utils.toWei('20', 'gwei'),
+		value: web3.utils.toWei('0.01', 'ether')
+	  });
+	const num = await supplyContract.methods.getDrugsNumber().call();
+	const drug = await supplyContract.methods.drugs(num - 1).call();
+	return drug;
+  };
+  
 export const buyDrug = async (id) => {
 	if (!isInitialized) {
 	  await init();

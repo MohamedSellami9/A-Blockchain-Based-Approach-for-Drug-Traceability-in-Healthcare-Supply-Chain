@@ -11,6 +11,10 @@ contract SupplyChain {
         uint id ;
         string name;
         string description;
+        string dosage_information;
+        string active_ingredients;
+        string adverse_reactions;
+        string instruc_foruse;
         address manufacturer;
         address ownerID;
         address pharmacy;
@@ -19,6 +23,7 @@ contract SupplyChain {
         Status Status;
         int tempC;
         int quantity;
+        string expdate;
         string date;
 
     }
@@ -144,29 +149,35 @@ function getAllStatus() public view returns (Status[] memory) {
     }
 event DrugAdded(uint indexed id, string name, string description, address indexed manufacturer, int price);
 
-function drugCreate(string memory name1, string memory description1, int price , int tempC ,int quantity,string memory date) public payable nameDrug(name1, description1) returns (Drug memory) {
+function drugCreate(string memory name,string memory description,string memory dosageInformation,string memory activeIngredients,string memory adverseReactions,string memory instrucForUse,int price,int tempC,int quantity,string memory expdate,
+    string memory date) public payable nameDrug(name, description) returns (Drug memory) {
     require(msg.value <= 0.01 ether, "Payment amount is insufficient.");
     Drug memory drug = Drug({
-        id : drugsNumber ,
-        name : name1,
-        description : description1,
-        manufacturer : msg.sender,
-        Status : Status.Created,
-        price : price ,
-        ownerID : msg.sender,
-        pharmacy : msg.sender,
-        distributor : msg.sender,
-        tempC : tempC,
-        quantity : quantity,
-        date : date
-        
+        id: drugsNumber,
+        name: name,
+        description: description,
+        dosage_information: dosageInformation,
+        active_ingredients: activeIngredients,
+        adverse_reactions: adverseReactions,
+        instruc_foruse: instrucForUse,
+        manufacturer: msg.sender,
+        ownerID: msg.sender,
+        pharmacy: msg.sender,
+        distributor: msg.sender,
+        price: price,
+        Status: Status.Created,
+        tempC: tempC,
+        quantity: quantity,
+        expdate: expdate,
+        date: date
     });
 
-    drugs[drugsNumber]= drug;
+    drugs[drugsNumber] = drug;
     drugsNumber++;
     emit DrugAdded(drug.id, drug.name, drug.description, drug.manufacturer, drug.price);
     return drug;
 }
+
 
 event OrderAdded(
   uint id,
@@ -200,7 +211,19 @@ event OrderAdded(
         if (n>0){
             drugs[orders[orderIndex].drugIndex].quantity-=orders[orderIndex].quantity;
             drugs[orders[orderIndex].drugIndex].Status=Status.ListedLot;
-            Drug memory drug2 =drugCreate(drugs[orders[orderIndex].drugIndex].name,drugs[orders[orderIndex].drugIndex].description,drugs[orders[orderIndex].drugIndex].price,drugs[orders[orderIndex].drugIndex].tempC,orders[orderIndex].quantity,drugs[orders[orderIndex].drugIndex].date);
+            Drug memory drug2 = drugCreate(
+                drugs[orders[orderIndex].drugIndex].name,
+                drugs[orders[orderIndex].drugIndex].description,
+                drugs[orders[orderIndex].drugIndex].dosage_information,
+                drugs[orders[orderIndex].drugIndex].active_ingredients,
+                drugs[orders[orderIndex].drugIndex].adverse_reactions,
+                drugs[orders[orderIndex].drugIndex].instruc_foruse,
+                drugs[orders[orderIndex].drugIndex].price,
+                drugs[orders[orderIndex].drugIndex].tempC,
+                orders[orderIndex].quantity,
+                drugs[orders[orderIndex].drugIndex].expdate,
+                drugs[orders[orderIndex].drugIndex].date
+            );
             drug2.manufacturer=drugs[orders[orderIndex].drugIndex].manufacturer;
             drug2.Status=Status.Ordered;
             drugs[drug2.id]=drug2;
@@ -242,7 +265,20 @@ event OrderAdded(
     }
     function buyDrug(uint index) public {
         drugs[index].quantity = drugs[index].quantity-1 ;
-        Drug memory drug2 =drugCreate(drugs[index].name,drugs[index].description,drugs[index].price,drugs[index].tempC,drugs[index].quantity,drugs[index].date);
+        Drug memory drug2 = drugCreate(
+            drugs[index].name,
+            drugs[index].description,
+            drugs[index].dosage_information,
+            drugs[index].active_ingredients,
+            drugs[index].adverse_reactions,
+            drugs[index].instruc_foruse,
+            drugs[index].price,
+            drugs[index].tempC,
+            drugs[index].quantity,
+            drugs[index].date,
+            drugs[index].expdate
+
+        );
         drugs[drug2.id].Status = Status.Sold;
         drugs[drug2.id].quantity = 1;
         if(drugs[index].quantity==0){

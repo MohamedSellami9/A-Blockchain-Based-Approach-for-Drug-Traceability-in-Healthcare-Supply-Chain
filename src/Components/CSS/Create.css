@@ -1,15 +1,16 @@
-
 .create-drug-form {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-
 }
 
 form {
   width: 80%;
-  max-width: 600px;
+  max-width: 1000px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   padding: 20px;
   background-color: #fff;
   border: 1px solid #ced4da;
@@ -23,13 +24,22 @@ label {
 }
 
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+input[type="date"] {
   width: 100%;
   padding: 10px;
   border: 1px solid #ced4da;
   border-radius: 5px;
   font-size: 16px;
   margin-bottom: 20px;
+}
+
+.left-side {
+  width: 48%;
+}
+
+.right-side {
+  width: 48%;
 }
 
 button {

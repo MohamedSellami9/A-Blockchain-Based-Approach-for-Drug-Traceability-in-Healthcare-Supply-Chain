@@ -42,6 +42,20 @@ function DrugDetails() {
           const drugTextLines = drugText.split('\n');
           const drugTextWidth = font.widthOfTextAtSize(drugText, fontSize);
           const drugTextHeight = font.heightAtSize(fontSize);
+          const borderColor = rgb(0.2, 0.2, 0.2);
+          const backgroundColor = rgb(0.9, 0.9, 0.9);
+          const borderPadding = 10;
+          const borderHeight = drugTextHeight * 5 + borderPadding * 2;
+          const borderWidth = drugTextWidth + borderPadding * 2;
+          page.drawRectangle({
+            x: page.getWidth()  - borderWidth / 2,
+            y: page.getHeight()  - borderHeight / 2,
+            width: borderWidth,
+            height: borderHeight,
+            borderWidth: 2,
+            borderColor: borderColor,
+            backgroundColor: backgroundColor,
+          });
           page.drawText(headerText, {
             x: page.getWidth() / 2 - headerTextWidth / 2,
             y: page.getHeight() - 50,
