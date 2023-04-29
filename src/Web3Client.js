@@ -605,11 +605,17 @@ export const Facture = async (row,gridRef,usersCollectionRef) => {
 	const headerTextHeight = font.heightAtSize(fontSize);
 	const drugText = `Drug Name: ${Drug.name} Price: ${Drug.price}`;
 	const drugText1 = `Manufacturer: ${ManuName}`;
+	const drugText11 = `Manufacturer public key: ${Drug.manufacturer}`;
+
 	const drugText2=`Pharmacy: ${PharmName}`;
+	const drugText22=`Pharmacy public key: ${Drug.pharmacy}`;
+
 	const qrCodeDataUrl = await QRCode.toDataURL('localhost3000/'+Drug.id);
 	const pngImage = await pdfDoc.embedPng(qrCodeDataUrl);
 	const drugText3 = `Creation Date: ${Drug.date}` ;
 	const drugText9=`Distributor: ${DistributorName}`;
+	const drugText99=`Distributor public key: ${Drug.distributor}`;
+
 
 	const drugText4=`Dosage Information: ${Drug.dosage_information}`;
 	const drugText5=`Active Ingredients: ${Drug.active_ingredients}`;
@@ -640,6 +646,13 @@ export const Facture = async (row,gridRef,usersCollectionRef) => {
 	  font: font,
 	  color: rgb(0, 0, 0),
 	});
+	page.drawText(drugText11, {
+		x:  drugTextWidth / 2,
+		y:  page.getHeight()-255 - drugTextHeight / 2-25,
+		size: fontSize,
+		font: font,
+		color: rgb(0, 0, 0),
+	  });
 	page.drawText(drugText2, {
 	  x:  drugTextWidth / 2,
 	  y:  page.getHeight()-255 - drugTextHeight / 2 -40,
@@ -647,51 +660,65 @@ export const Facture = async (row,gridRef,usersCollectionRef) => {
 	  font: font,
 	  color: rgb(0, 0, 0),
 	});
-	page.drawText(drugText3, {
-	  x:  drugTextWidth / 2,
-	  y:  page.getHeight()-255 - drugTextHeight / 2-70,
-	  size: fontSize,
-	  font: font,
-	  color: rgb(0, 0, 0),
-	});
-	page.drawText(drugText9, {
+	page.drawText(drugText22, {
 		x:  drugTextWidth / 2,
-		y:  page.getHeight()-255 - drugTextHeight / 2-100,
+		y:  page.getHeight()-255 - drugTextHeight / 2 -55,
 		size: fontSize,
 		font: font,
 		color: rgb(0, 0, 0),
 	  });
-	page.drawText(drugText4, {
+	page.drawText(drugText3, {
 	  x:  drugTextWidth / 2,
 	  y:  page.getHeight()-255 - drugTextHeight / 2-100,
 	  size: fontSize,
 	  font: font,
 	  color: rgb(0, 0, 0),
 	});
-	page.drawText(drugText5, {
+	page.drawText(drugText9, {
 		x:  drugTextWidth / 2,
-		y:  page.getHeight()-255 - drugTextHeight / 2-130,
+		y:  page.getHeight()-255 - drugTextHeight / 2-70,
 		size: fontSize,
 		font: font,
 		color: rgb(0, 0, 0),
 	  });
-	  page.drawText(drugText6, {
+	  page.drawText(drugText99, {
+		x:  drugTextWidth / 2,
+		y:  page.getHeight()-255 - drugTextHeight / 2-85,
+		size: fontSize,
+		font: font,
+		color: rgb(0, 0, 0),
+	  });
+	page.drawText(drugText4, {
+	  x:  drugTextWidth / 2,
+	  y:  page.getHeight()-255 - drugTextHeight / 2-130,
+	  size: fontSize,
+	  font: font,
+	  color: rgb(0, 0, 0),
+	});
+	page.drawText(drugText5, {
 		x:  drugTextWidth / 2,
 		y:  page.getHeight()-255 - drugTextHeight / 2-160,
 		size: fontSize,
 		font: font,
 		color: rgb(0, 0, 0),
 	  });
-	  page.drawText(drugText7, {
+	  page.drawText(drugText6, {
 		x:  drugTextWidth / 2,
 		y:  page.getHeight()-255 - drugTextHeight / 2-190,
 		size: fontSize,
 		font: font,
 		color: rgb(0, 0, 0),
 	  });
-	  page.drawText(drugText8, {
+	  page.drawText(drugText7, {
 		x:  drugTextWidth / 2,
 		y:  page.getHeight()-255 - drugTextHeight / 2-220,
+		size: fontSize,
+		font: font,
+		color: rgb(0, 0, 0),
+	  });
+	  page.drawText(drugText8, {
+		x:  drugTextWidth / 2,
+		y:  page.getHeight()-255 - drugTextHeight / 2-250,
 		size: fontSize,
 		font: font,
 		color: rgb(0, 0, 0),
