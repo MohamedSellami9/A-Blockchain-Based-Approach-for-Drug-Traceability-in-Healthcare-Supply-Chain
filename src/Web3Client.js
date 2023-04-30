@@ -179,8 +179,6 @@ export const createDrug = async (name, description, dosageInformation, activeIng
 	  .drugCreate(name, description, dosageInformation, activeIngredients, adverseReactions, instrucForUse, price, tempC, quantity, expdate, date)
 	  .send({
 		from: selectedAccount,
-		gas: '500000',
-		gasPrice: web3.utils.toWei('20', 'gwei'),
 		value: web3.utils.toWei('0.01', 'ether')
 	  });
 	const num = await supplyContract.methods.getDrugsNumber().call();
@@ -192,11 +190,14 @@ export const buyDrug = async (id) => {
 	if (!isInitialized) {
 	  await init();
 	}
+
   const drug = await getDrug(id);
+  const valueInEther = drug.price/1905;
+  const valueInWei = web3.utils.toWei(valueInEther.toFixed(6), 'ether');
 	const result = await supplyContract.methods
 	  .buyDrug(id)
 	  .send({ from: selectedAccount,
-	value: web3.utils.toWei((drug.price/1905).toString(), 'ether')});
+	value: valueInWei});
 	return result;
   };
 //  export const giveClientRole = async () => {
@@ -633,11 +634,11 @@ export const Facture = async (row,gridRef,usersCollectionRef) => {
 	const drugText99=`Distributor public key: ${Drug.distributor}`;
 
 
-	const drugText4=`Dosage Information: ${Drug.dosage_information}`;
-	const drugText5=`Active Ingredients: ${Drug.active_ingredients}`;
-	const drugText6=`Instruc For Use: ${Drug.instruc_foruse}`;
-	const drugText7=`Adverse Reactions: ${Drug.adverse_reactions}`;
-	const drugText8=`Expiration date: ${Drug.expdate}`;
+	const drugText4=`Dosage Information: ${Drug.dosage_information.replace(/(.{100})/g, '$1\n')}}`;
+	const drugText5=`Active Ingredients: ${Drug.active_ingredients.replace(/(	.{100})/g, '$1\n')}\n`;
+	const drugText6=`\nInstruc For Use: ${Drug.instruc_foruse.replace(/(.{60})/g, '$1\n')}`;
+	const drugText7=`\nAdverse Reactions: ${Drug.adverse_reactions.replace(/(.{60})/g, '$1\n')}\n`;
+	const drugText8=`\nExpiration date: ${Drug.expdate}`;
 	const drugTextLines = drugText.split('\n');
 	const drugTextWidth = font.widthOfTextAtSize(drugText, fontSize);
 	const drugTextHeight = font.heightAtSize(fontSize);
@@ -727,14 +728,14 @@ export const Facture = async (row,gridRef,usersCollectionRef) => {
 	  });
 	  page.drawText(drugText7, {
 		x:  drugTextWidth / 2,
-		y:  page.getHeight()-255 - drugTextHeight / 2-220,
+		y:  page.getHeight()-255 - drugTextHeight / 2-230,
 		size: fontSize,
 		font: font,
 		color: rgb(0, 0, 0),
 	  });
 	  page.drawText(drugText8, {
 		x:  drugTextWidth / 2,
-		y:  page.getHeight()-255 - drugTextHeight / 2-250,
+		y:  page.getHeight()-255 - drugTextHeight / 2-270,
 		size: fontSize,
 		font: font,
 		color: rgb(0, 0, 0),

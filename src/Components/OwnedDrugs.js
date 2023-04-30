@@ -51,7 +51,7 @@ function OwnedDrug(props) {
           gridRef.current.api.applyTransaction({ remove: [row] });
         }
       },
-      hide: !((props.role === "admin")||(props.role === "pharmacy"))
+      hide: !((props.role === "pharmacy"))
     },
     {
       headerName: 'Received',
@@ -66,7 +66,7 @@ function OwnedDrug(props) {
         
         }
       },
-      hide: !((props.role === "admin")||(props.role === "pharmacy"))
+      hide: !((props.role === "pharmacy"))
     },
     {
       headerName: 'ListLot',
